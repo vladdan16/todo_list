@@ -1,10 +1,25 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_list/generated/codegen_loader.g.dart';
 import 'package:todo_list/pages/home_page.dart';
 
-void main() {
-  runApp(EasyDynamicThemeWidget(child: const TodoListApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ru')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      assetLoader: const CodegenLoader(),
+      child: EasyDynamicThemeWidget(
+        child: const TodoListApp(),
+      ),
+    ),
+  );
 }
 
 class TodoListApp extends StatelessWidget {
@@ -34,6 +49,9 @@ class TodoListApp extends StatelessWidget {
         }
 
         return MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
           debugShowCheckedModeBanner: false,
           title: 'ToDo List',
           theme: ThemeData(
