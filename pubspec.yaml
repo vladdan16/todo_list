@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dynamic_color: ^1.6.5
   easy_dynamic_theme: ^2.3.1
+  easy_localization: ^3.0.2
 
 dev_dependencies:
   flutter_test:
