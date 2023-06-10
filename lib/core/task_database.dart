@@ -25,6 +25,13 @@ final class TaskDatabase {
     DateTime? deadline,
   }) {
     var task = _tasks[id];
+    if (done != null) {
+      if (done && !task.done) {
+        _completed++;
+      } else if (!done && task.done) {
+        _completed--;
+      }
+    }
     task.name = name ?? task.name;
     task.description = description ?? task.description;
     task.done = done ?? task.done;

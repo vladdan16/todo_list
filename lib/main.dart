@@ -63,7 +63,7 @@ class TodoListApp extends StatelessWidget {
             useMaterial3: true,
           ),
           themeMode: EasyDynamicTheme.of(context).themeMode,
-          home: const HomePage(title: 'ToDo list'),
+          home: const HomePage(),
         );
       },
     );
