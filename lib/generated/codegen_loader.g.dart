@@ -15,10 +15,14 @@ class CodegenLoader extends AssetLoader{
   }
 
   static const Map<String,dynamic> ru = {
-  "todo_list": "Мои дела"
+  "todo_list": "Мои дела",
+  "task_title": "Имя задачи",
+  "what_i_need_todo": "Что надо сделать..."
 };
 static const Map<String,dynamic> en = {
-  "todo_list": "ToDo List"
+  "todo_list": "ToDo List",
+  "task_title": "Task title",
+  "what_i_need_todo": "What I need to do..."
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ru": ru, "en": en};
 }
