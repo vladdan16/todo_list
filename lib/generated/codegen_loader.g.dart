@@ -18,13 +18,21 @@ class CodegenLoader extends AssetLoader{
   "todo_list": "Мои дела",
   "task_title": "Имя задачи",
   "task_description": "Что надо сделать...",
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "importance": "Важность",
+  "no": "Нет",
+  "low": "Низкая",
+  "high": "Высокая"
 };
 static const Map<String,dynamic> en = {
   "todo_list": "ToDo List",
   "task_title": "Task title",
   "task_description": "What I need to do...",
-  "save": "Save"
+  "save": "Save",
+  "importance": "Importance",
+  "no": "No",
+  "low": "Low",
+  "high": "High"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ru": ru, "en": en};
 }

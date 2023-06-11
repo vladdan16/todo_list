@@ -27,7 +27,7 @@ final class TaskDatabase {
     String? name,
     String? description,
     bool? done,
-    bool? importance,
+    Importance? importance,
     DateTime? deadline,
   }) {
     if (done != null) {

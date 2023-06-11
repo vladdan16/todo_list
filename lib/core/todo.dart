@@ -2,14 +2,14 @@ base class ToDo {
   String name;
   String description;
   bool done;
-  bool importance;
+  Importance importance;
   DateTime? deadline;
 
   ToDo({
-    required this.name,
+    this.name = '',
     this.description = '',
     this.done = false,
-    this.importance = false,
+    this.importance = Importance.no,
     this.deadline,
   });
 
@@ -17,7 +17,7 @@ base class ToDo {
     String name = json['name'];
     String description = json['description'];
     bool done = json['done'];
-    bool importance = json['importance'];
+    Importance importance = json['importance'];
     DateTime deadline = json['deadline'];
     return ToDo(
       name: name,
@@ -36,5 +36,13 @@ base class ToDo {
       'importance': importance,
       'deadline': deadline,
     };
+  }
+}
+
+enum Importance { no, low, high }
+
+extension Parser on Importance {
+  String get name {
+    return toString().split('.').last;
   }
 }

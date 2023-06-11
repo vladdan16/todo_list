@@ -2,5 +2,9 @@
   "todo_list": "ToDo List",
   "task_title": "Task title",
   "task_description": "What I need to do...",
-  "save": "Save"
+  "save": "Save",
+  "importance": "Importance",
+  "no": "No",
+  "low": "Low",
+  "high": "High"
 }
