@@ -22,7 +22,8 @@ class CodegenLoader extends AssetLoader{
   "importance": "Важность",
   "no": "Нет",
   "low": "Низкая",
-  "high": "Высокая"
+  "high": "Высокая",
+  "deadline": "Сделать до"
 };
 static const Map<String,dynamic> en = {
   "todo_list": "ToDo List",
@@ -32,7 +33,8 @@ static const Map<String,dynamic> en = {
   "importance": "Importance",
   "no": "No",
   "low": "Low",
-  "high": "High"
+  "high": "High",
+  "deadline": "Deadline"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ru": ru, "en": en};
 }

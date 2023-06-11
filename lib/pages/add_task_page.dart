@@ -135,6 +135,38 @@ class _TaskPageState extends State<TaskPage> {
                       },
                     ),
                     const Divider(),
+                    SwitchListTile(
+                      title: const Text('deadline').tr(),
+                      subtitle: widget.task.deadline != null
+                          ? Text(widget.task.deadline?.date ?? '')
+                          : null,
+                      value: widget.task.hasDeadline,
+                      onChanged: (bool value) {
+                        widget.task.hasDeadline = value;
+                        var currentDate = DateTime.now();
+                        if (value) {
+                          showDatePicker(
+                            context: context,
+                            initialDate: currentDate.add(
+                              const Duration(days: 1),
+                            ),
+                            firstDate: currentDate,
+                            lastDate: DateTime(2030),
+                          ).then((value) {
+                            widget.task.deadline = value;
+                            if (value == null) {
+                              widget.task.hasDeadline = false;
+                            }
+                            setState(() {});
+                          });
+                        } else {
+                          widget.task.deadline = null;
+                          widget.task.hasDeadline = false;
+                        }
+                        setState(() {});
+                      },
+                    ),
+                    const Divider(),
                   ],
                 ),
               ),

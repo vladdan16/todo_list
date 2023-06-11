@@ -1,9 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+
 base class ToDo {
   String name;
   String description;
   bool done;
   Importance importance;
   DateTime? deadline;
+  bool hasDeadline;
 
   ToDo({
     this.name = '',
@@ -11,6 +14,7 @@ base class ToDo {
     this.done = false,
     this.importance = Importance.no,
     this.deadline,
+    this.hasDeadline = false,
   });
 
   factory ToDo.fromJson(Map<String, dynamic> json) {
@@ -19,12 +23,14 @@ base class ToDo {
     bool done = json['done'];
     Importance importance = json['importance'];
     DateTime deadline = json['deadline'];
+    bool hasDeadline = json['hasDeadline'];
     return ToDo(
       name: name,
       description: description,
       done: done,
       importance: importance,
       deadline: deadline,
+      hasDeadline: hasDeadline,
     );
   }
 
@@ -35,6 +41,7 @@ base class ToDo {
       'done': done,
       'importance': importance,
       'deadline': deadline,
+      'hasDeadline': hasDeadline,
     };
   }
 }
@@ -44,5 +51,12 @@ enum Importance { no, low, high }
 extension Parser on Importance {
   String get name {
     return toString().split('.').last;
+  }
+}
+
+extension DateToText on DateTime {
+  String get date {
+    var formatter = DateFormat('d MMMM yyyy');
+    return formatter.format(this);
   }
 }
