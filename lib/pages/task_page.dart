@@ -167,6 +167,29 @@ class _TaskPageState extends State<TaskPage> {
                       },
                     ),
                     const Divider(),
+                    TextButton(
+                      onPressed: widget.newTask ? null : () {},
+                      style: ButtonStyle(
+                        foregroundColor: widget.newTask
+                            ? null
+                            : MaterialStateProperty.all<Color>(Colors.red),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete),
+                          const SizedBox(width: 5),
+                          Text(
+                            'delete',
+                            style: TextStyle(
+                              fontSize: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.fontSize,
+                            ),
+                          ).tr(),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

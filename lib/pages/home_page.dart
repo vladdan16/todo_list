@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/core/todo.dart';
-import 'package:todo_list/pages/add_task_page.dart';
+import 'package:todo_list/pages/task_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
