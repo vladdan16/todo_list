@@ -1,11 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/core/todo.dart';
 import 'package:todo_list/pages/task_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.prefs});
+
+  final SharedPreferences prefs;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,8 +21,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    tasks = database.tasks;
-    _showCompleteTasks = true;
+    _showCompleteTasks = widget.prefs.getBool('show_completed_tasks') ?? true;
+    tasks = _showCompleteTasks ? database.tasks : database.uncompletedTasks;
   }
 
   @override
@@ -51,6 +54,10 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     setState(() {
                       _showCompleteTasks = !_showCompleteTasks;
+                      widget.prefs.setBool(
+                        'show_completed_tasks',
+                        _showCompleteTasks,
+                      );
                       if (_showCompleteTasks) {
                         tasks = database.tasks;
                       } else {

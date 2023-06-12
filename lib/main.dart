@@ -2,12 +2,16 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/generated/codegen_loader.g.dart';
 import 'package:todo_list/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  // TODO: Make usage of shared preferences more convenient
+  final prefs = await SharedPreferences.getInstance();
 
   runApp(
     EasyLocalization(
@@ -16,14 +20,16 @@ void main() async {
       fallbackLocale: const Locale('en'),
       assetLoader: const CodegenLoader(),
       child: EasyDynamicThemeWidget(
-        child: const TodoListApp(),
+        child: TodoListApp(prefs: prefs),
       ),
     ),
   );
 }
 
 class TodoListApp extends StatelessWidget {
-  const TodoListApp({super.key});
+  const TodoListApp({super.key, required this.prefs});
+
+  final SharedPreferences prefs;
 
   static const _brandColor = Colors.green;
 
@@ -63,7 +69,7 @@ class TodoListApp extends StatelessWidget {
             useMaterial3: true,
           ),
           themeMode: EasyDynamicTheme.of(context).themeMode,
-          home: const HomePage(),
+          home: HomePage(prefs: prefs),
         );
       },
     );
