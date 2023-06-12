@@ -33,6 +33,7 @@ class _TaskPageState extends State<TaskPage> {
     descriptionTextController = TextEditingController(
       text: widget.task.description,
     );
+    super.initState();
   }
 
   @override

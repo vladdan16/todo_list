@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _showCompleteTasks = widget.prefs.getBool('show_completed_tasks') ?? true;
     tasks = _showCompleteTasks ? database.tasks : database.uncompletedTasks;
+    super.initState();
   }
 
   @override

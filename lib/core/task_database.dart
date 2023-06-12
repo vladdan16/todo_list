@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'todo.dart';
@@ -11,7 +9,6 @@ final class TaskDatabase {
   static final _database = TaskDatabase._internal();
 
   final logger = Logger();
-  static const _dataFileName = 'data.json';
 
   final List<ToDo> _tasks = [];
   final List<ToDo> _uncompletedTasks = [];
@@ -22,17 +19,6 @@ final class TaskDatabase {
   }
 
   TaskDatabase._internal();
-
-  // TaskDatabase._internal() {
-  //   for (int i = 0; i < 20; i++) {
-  //     var task = ToDo(
-  //       name: 'Task $i',
-  //       description: "kahedbrgljkaw kgb ijnbag;LWJH GKJLJR<WIUG WK<J BK<JH KG <HKGJH SJBGKJNBRB KJ<WBG KJ BK<GGKJ<I SGR MNGS< KL BKHEFB S< GBKR BGKRS GKSJNBB KJR;U R<KJ KJBG K;JSN RG;KJNG SE;JEN<G;BGE;<B G;JBN GEK<J< ;GKJBG SEKJBGKJ",
-  //     );
-  //     _tasks.add(task);
-  //     _uncompletedTasks.add(task);
-  //   }
-  // }
 
   void addTask(ToDo task) {
     _tasks.add(task);
@@ -117,5 +103,4 @@ final class TaskDatabase {
       logger.e('Failed to save tasks: $e');
     }
   }
-
 }
