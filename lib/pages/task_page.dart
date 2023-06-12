@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:todo_list/core/task_database.dart';
 
 import '../core/todo.dart';
 
@@ -18,6 +19,7 @@ class _TaskPageState extends State<TaskPage> {
   late TextEditingController titleTextController;
   late TextEditingController descriptionTextController;
   var logger = Logger();
+  final database = TaskDatabase();
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _TaskPageState extends State<TaskPage> {
               TextButton(
                 onPressed: () {
                   // TODO: save
+                  database.addTask(widget.task);
                   Navigator.of(context).pop();
                 },
                 child: Text(

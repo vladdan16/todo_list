@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
                       : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
+                      // TODO: show only complete tasks
                       _showCompleteTasks = !_showCompleteTasks;
                     });
                   },
