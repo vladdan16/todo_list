@@ -14,5 +14,6 @@
   "confirm": "Подтвердить",
   "cancel": "Отмена",
   "confirm_delete": "Подтверждение удаления",
-  "confirm_delete_description": "Вы собираетесь удалить задачу. Вы уверены?"
+  "confirm_delete_description": "Вы собираетесь удалить задачу. Вы уверены?",
+  "completed": "Выполнено"
 }

@@ -12,8 +12,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _showCompleteTasks = false;
-  var database = TaskDatabase();
+  final database = TaskDatabase();
+  late bool _showCompleteTasks;
+  late List<ToDo> tasks;
+
+  @override
+  void initState() {
+    tasks = database.tasks;
+    _showCompleteTasks = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +31,31 @@ class _HomePageState extends State<HomePage> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text('todo_list').tr(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text('todo_list').tr(),
+                    Text(
+                      '${'completed'.tr()} - ${database.completed}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
                 IconButton(
                   icon: Icon(_showCompleteTasks
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+                      ? Icons.visibility_off
+                      : Icons.visibility),
                   onPressed: () {
                     setState(() {
-                      // TODO: show only not completed tasks
                       _showCompleteTasks = !_showCompleteTasks;
+                      if (_showCompleteTasks) {
+                        tasks = database.tasks;
+                      } else {
+                        tasks = database.uncompletedTasks;
+                      }
                     });
                   },
                 ),
@@ -53,9 +76,20 @@ class _HomePageState extends State<HomePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      for (var task in database.tasks)
+                      for (var task in tasks)
                         ListTile(
                           title: Text(task.name),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                task.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (task.hasDeadline) Text(task.deadline!.date)
+                            ],
+                          ),
                           leading: Checkbox(
                             value: task.done,
                             onChanged: (bool? value) {
