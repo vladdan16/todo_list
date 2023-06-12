@@ -21,8 +21,9 @@ base class ToDo {
     String name = json['name'];
     String description = json['description'];
     bool done = json['done'];
-    Importance importance = json['importance'];
-    DateTime deadline = json['deadline'];
+    Importance importance = importanceFromString(json['importance']);
+    DateTime? deadline =
+        json['deadline'] != null ? DateTime.parse(json['deadline']) : null;
     bool hasDeadline = json['hasDeadline'];
     return ToDo(
       name: name,
@@ -39,14 +40,36 @@ base class ToDo {
       'name': name,
       'description': description,
       'done': done,
-      'importance': importance,
-      'deadline': deadline,
+      'importance': importanceToString(importance),
+      'deadline': deadline?.toIso8601String(),
       'hasDeadline': hasDeadline,
     };
   }
 }
 
 enum Importance { no, low, high }
+
+String importanceToString(Importance importance) {
+  switch (importance) {
+    case Importance.low:
+      return 'low';
+    case Importance.high:
+      return 'high';
+    default:
+      return 'no';
+  }
+}
+
+Importance importanceFromString(String value) {
+  switch (value) {
+    case 'low':
+      return Importance.low;
+    case 'high':
+      return Importance.high;
+    default:
+      return Importance.no;
+  }
+}
 
 extension Parser on Importance {
   String get name {

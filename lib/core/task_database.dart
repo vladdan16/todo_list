@@ -1,7 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'todo.dart';
 
 final class TaskDatabase {
   static final _database = TaskDatabase._internal();
+
+  final logger = Logger();
+  static const _dataFileName = 'data.json';
 
   final List<ToDo> _tasks = [];
   final List<ToDo> _uncompletedTasks = [];
@@ -27,6 +37,7 @@ final class TaskDatabase {
   void addTask(ToDo task) {
     _tasks.add(task);
     _uncompletedTasks.add(task);
+    _saveTasks();
   }
 
   void removeTask(ToDo task) {
@@ -34,6 +45,7 @@ final class TaskDatabase {
     if (_uncompletedTasks.contains(task)) {
       _uncompletedTasks.remove(task);
     }
+    _saveTasks();
   }
 
   void modifyTask(
@@ -58,6 +70,7 @@ final class TaskDatabase {
     task.done = done ?? task.done;
     task.importance = importance ?? task.importance;
     task.deadline = deadline ?? task.deadline;
+    _saveTasks();
   }
 
   List<ToDo> get tasks {
@@ -71,4 +84,38 @@ final class TaskDatabase {
   int get completed {
     return _completed;
   }
+
+  Future<void> loadTasks() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? tasksJson = prefs.getString('tasks');
+      if (tasksJson != null) {
+        var taskData = jsonDecode(tasksJson) as List;
+        for (var e in taskData) {
+          ToDo task = ToDo.fromJson(e);
+          _tasks.add(task);
+          if (task.done) {
+            _completed++;
+          } else {
+            _uncompletedTasks.add(task);
+          }
+        }
+      }
+    } catch (e) {
+      logger.e("Error while reading file: $e");
+    }
+  }
+
+  Future<void> _saveTasks() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<Map<String, dynamic>> tasksData =
+          _tasks.map((e) => e.toJson()).toList();
+      String tasksJson = jsonEncode(tasksData);
+      await prefs.setString('tasks', tasksJson);
+    } catch (e) {
+      logger.e('Failed to save tasks: $e');
+    }
+  }
+
 }

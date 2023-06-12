@@ -61,7 +61,6 @@ class _TaskPageState extends State<TaskPage> {
                   } else {
                     database.addTask(widget.task);
                     Navigator.of(context).pop();
-                    //setState(() {});
                   }
                 },
                 child: Text(
@@ -85,7 +84,6 @@ class _TaskPageState extends State<TaskPage> {
                         controller: titleTextController,
                         decoration: InputDecoration(
                           hintText: 'task_title'.tr(),
-                          //border: const OutlineInputBorder()
                         ),
                         style: TextStyle(
                           fontSize: Theme.of(context)
@@ -182,7 +180,6 @@ class _TaskPageState extends State<TaskPage> {
                           widget.task.deadline = null;
                           widget.task.hasDeadline = false;
                         }
-                        //setState(() {});
                       },
                     ),
                     const Divider(),

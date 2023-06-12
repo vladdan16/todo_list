@@ -3,12 +3,15 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/generated/codegen_loader.g.dart';
 import 'package:todo_list/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  TaskDatabase database = TaskDatabase();
+  await database.loadTasks();
 
   // TODO: Make usage of shared preferences more convenient
   final prefs = await SharedPreferences.getInstance();
