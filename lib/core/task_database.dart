@@ -12,14 +12,24 @@ final class TaskDatabase {
   }
 
   TaskDatabase._internal() {
-    for (int i = 0; i < 30; i++) {
-      _tasks.add(ToDo(name: 'Task $i'));
+    for (int i = 0; i < 20; i++) {
+      _tasks.add(ToDo(
+        name: 'Task $i',
+        description: "kahedbrgljkaw kgb ijnbag;LWJH GKJLJR<WIUG WK<J BK<JH KG <HKGJH SJBGKJNBRB KJ<WBG KJ BK<GGKJ<I SGR MNGS< KL BKHEFB S< GBKR BGKRS GKSJNBB KJR;U R<KJ KJBG K;JSN RG;KJNG SE;JEN<G;BGE;<B G;JBN GEK<J< ;GKJBG SEKJBGKJ",
+      ));
     }
   }
 
   void addTask(ToDo task) {
     _tasks.add(task);
     _uncompletedTasks.add(task);
+  }
+
+  void removeTask(ToDo task) {
+    _tasks.remove(task);
+    if (_uncompletedTasks.contains(task)) {
+      _uncompletedTasks.remove(task);
+    }
   }
 
   void modifyTask(

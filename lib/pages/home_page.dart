@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar.large(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 const Text('todo_list').tr(),
                 IconButton(
                   icon: Icon(_showCompleteTasks
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
                       : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
-                      // TODO: show only complete tasks
+                      // TODO: show only not completed tasks
                       _showCompleteTasks = !_showCompleteTasks;
                     });
                   },
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
+                    children: <Widget>[
                       for (var task in database.tasks)
                         ListTile(
                           title: Text(task.name),
@@ -66,12 +66,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                           trailing: IconButton(
                             icon: const Icon(Icons.info_outline),
-                            onPressed: () {
-                              Navigator.of(context).push(
+                            onPressed: () async {
+                              final _ = await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (context) {
                                   return TaskPage(task: task);
                                 }),
                               );
+                              setState(() {});
                             },
                           ),
                         ),
@@ -84,13 +85,14 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           // MyDialogs.showTaskDialog(context: context);
-          Navigator.of(context).push(
+          final _ = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
               return TaskPage(task: ToDo(), newTask: true);
             }),
           );
+          setState(() {});
         },
         tooltip: 'Add task',
         child: const Icon(Icons.add),

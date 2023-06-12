@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:todo_list/core/task_database.dart';
+import 'package:todo_list/utils/my_dialogs.dart';
 
 import '../core/todo.dart';
 
@@ -21,6 +22,11 @@ class _TaskPageState extends State<TaskPage> {
   var logger = Logger();
   final database = TaskDatabase();
 
+  void _saveTask() {
+    widget.task.name = titleTextController.text;
+    widget.task.description = descriptionTextController.text;
+  }
+
   @override
   void initState() {
     titleTextController = TextEditingController(text: widget.task.name);
@@ -33,7 +39,7 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        slivers: [
+        slivers: <Widget>[
           SliverAppBar(
             pinned: true,
             leading: IconButton(
@@ -42,12 +48,21 @@ class _TaskPageState extends State<TaskPage> {
               },
               icon: const Icon(Icons.close),
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  // TODO: save
-                  database.addTask(widget.task);
-                  Navigator.of(context).pop();
+                  _saveTask();
+                  if (widget.task.name == '') {
+                    MyDialogs.showInfoDialog(
+                      context: context,
+                      title: 'empty_title',
+                      description: 'empty_title_description',
+                    );
+                  } else {
+                    database.addTask(widget.task);
+                    Navigator.of(context).pop();
+                    //setState(() {});
+                  }
                 },
                 child: Text(
                   'save'.tr().toUpperCase(),
@@ -63,7 +78,7 @@ class _TaskPageState extends State<TaskPage> {
             sliver: SliverToBoxAdapter(
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: TextField(
@@ -78,6 +93,7 @@ class _TaskPageState extends State<TaskPage> {
                               .headlineMedium
                               ?.fontSize,
                         ),
+                        textInputAction: TextInputAction.next,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -166,12 +182,25 @@ class _TaskPageState extends State<TaskPage> {
                           widget.task.deadline = null;
                           widget.task.hasDeadline = false;
                         }
-                        setState(() {});
+                        //setState(() {});
                       },
                     ),
                     const Divider(),
                     TextButton(
-                      onPressed: widget.newTask ? null : () {},
+                      onPressed: widget.newTask
+                          ? null
+                          : () {
+                              MyDialogs.showConfirmDialog(
+                                context: context,
+                                title: 'confirm_delete',
+                                description: 'confirm_delete_description',
+                                onConfirmed: () {
+                                  database.removeTask(widget.task);
+                                  Navigator.of(context).pop();
+                                  setState(() {});
+                                },
+                              );
+                            },
                       style: ButtonStyle(
                         foregroundColor: widget.newTask
                             ? null

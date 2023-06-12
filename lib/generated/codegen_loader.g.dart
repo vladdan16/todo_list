@@ -24,7 +24,13 @@ class CodegenLoader extends AssetLoader{
   "low": "Низкая",
   "high": "Высокая",
   "deadline": "Сделать до",
-  "delete": "Удалить"
+  "delete": "Удалить",
+  "empty_title": "Пустое имя",
+  "empty_title_description": "Имя задачи не может быть пустым. Пожалуйста, добавьте имя задачи.",
+  "confirm": "Подтвердить",
+  "cancel": "Отмена",
+  "confirm_delete": "Подтверждение удаления",
+  "confirm_delete_description": "Вы собираетесь удалить задачу. Вы уверены?"
 };
 static const Map<String,dynamic> en = {
   "todo_list": "ToDo List",
@@ -36,7 +42,13 @@ static const Map<String,dynamic> en = {
   "low": "Low",
   "high": "High",
   "deadline": "Deadline",
-  "delete": "Delete"
+  "delete": "Delete",
+  "empty_title": "Empty title",
+  "empty_title_description": "Title field cannot be empty. Please, add name to your task.",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "confirm_delete": "Confirm deletion",
+  "confirm_delete_description": "You are about to delete your task. Are you sure?"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ru": ru, "en": en};
 }

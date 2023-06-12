@@ -8,5 +8,11 @@
   "low": "Low",
   "high": "High",
   "deadline": "Deadline",
-  "delete": "Delete"
+  "delete": "Delete",
+  "empty_title": "Empty title",
+  "empty_title_description": "Title field cannot be empty. Please, add name to your task.",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "confirm_delete": "Confirm deletion",
+  "confirm_delete_description": "You are about to delete your task. Are you sure?"
 }
