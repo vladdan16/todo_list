@@ -18,11 +18,36 @@ class _HomePageState extends State<HomePage> {
   final database = TaskDatabase();
   late bool _showCompleteTasks;
   late List<ToDo> tasks;
+  late final ScrollController _scrollController;
+  double _scrollPosition = 0;
+
+  void _scrollListener() {
+    setState(() {
+      _scrollPosition = _scrollController.position.pixels;
+      print(_scrollPosition);
+    });
+  }
+
+  Widget? _getCompletedNumber() {
+    if (_scrollPosition == 0) {
+      return Text(
+        '${'completed'.tr()} - ${database.completed}',
+        style: TextStyle(
+          fontSize: 15,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      );
+    } else {
+      return null;
+    }
+  }
 
   @override
   void initState() {
     _showCompleteTasks = widget.prefs.getBool('show_completed_tasks') ?? true;
     tasks = _showCompleteTasks ? database.tasks : database.uncompletedTasks;
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
@@ -30,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           SliverAppBar.large(
             title: Row(
@@ -39,13 +65,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const Text('todo_list').tr(),
-                    Text(
-                      '${'completed'.tr()} - ${database.completed}',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
+                    _getCompletedNumber() ?? const SizedBox(),
                   ],
                 ),
                 IconButton(
@@ -86,15 +106,20 @@ class _HomePageState extends State<HomePage> {
                     children: <Widget>[
                       for (var task in tasks)
                         ListTile(
-                          title: Text(task.name),
+                          title: Text(
+                            task.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                task.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              if (task.description != '')
+                                Text(
+                                  task.description,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               if (task.hasDeadline) Text(task.deadline!.date)
                             ],
                           ),
