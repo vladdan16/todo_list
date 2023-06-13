@@ -19,12 +19,14 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   late TextEditingController titleTextController;
   late TextEditingController descriptionTextController;
+  late ToDo curTask;
   var logger = Logger();
   final database = TaskDatabase();
 
   void _saveTask() {
-    widget.task.name = titleTextController.text;
-    widget.task.description = descriptionTextController.text;
+    curTask.name = titleTextController.text;
+    curTask.description = descriptionTextController.text;
+    if (!widget.newTask) database.modifyTaskFromToDo(widget.task, curTask);
   }
 
   @override
@@ -33,6 +35,11 @@ class _TaskPageState extends State<TaskPage> {
     descriptionTextController = TextEditingController(
       text: widget.task.description,
     );
+    if (widget.newTask) {
+      curTask = widget.task;
+    } else {
+      curTask = ToDo.copyWith(widget.task);
+    }
     super.initState();
   }
 
@@ -60,7 +67,7 @@ class _TaskPageState extends State<TaskPage> {
                       description: 'empty_title_description',
                     );
                   } else {
-                    database.addTask(widget.task);
+                    database.saveTask(widget.task);
                     Navigator.of(context).pop();
                   }
                 },
@@ -113,7 +120,7 @@ class _TaskPageState extends State<TaskPage> {
                     const SizedBox(height: 10),
                     ListTile(
                       title: const Text('importance').tr(),
-                      subtitle: Text(widget.task.importance.name).tr(),
+                      subtitle: Text(curTask.importance.name).tr(),
                       onTap: () {
                         final overlay = Overlay.of(context)
                             .context
@@ -145,8 +152,8 @@ class _TaskPageState extends State<TaskPage> {
                           ],
                         ).then((Importance? value) {
                           setState(() {
-                            widget.task.importance =
-                                value ?? widget.task.importance;
+                            curTask.importance =
+                                value ?? curTask.importance;
                             //logger.i(value?.name);
                           });
                         });
@@ -155,12 +162,12 @@ class _TaskPageState extends State<TaskPage> {
                     const Divider(),
                     SwitchListTile(
                       title: const Text('deadline').tr(),
-                      subtitle: widget.task.deadline != null
-                          ? Text(widget.task.deadline?.date ?? '')
+                      subtitle: curTask.deadline != null
+                          ? Text(curTask.deadline?.date ?? '')
                           : null,
-                      value: widget.task.hasDeadline,
+                      value: curTask.hasDeadline,
                       onChanged: (bool value) {
-                        widget.task.hasDeadline = value;
+                        curTask.hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
                           showDatePicker(
@@ -171,15 +178,15 @@ class _TaskPageState extends State<TaskPage> {
                             firstDate: currentDate,
                             lastDate: DateTime(2030),
                           ).then((value) {
-                            widget.task.deadline = value;
+                            curTask.deadline = value;
                             if (value == null) {
-                              widget.task.hasDeadline = false;
+                              curTask.hasDeadline = false;
                             }
                             setState(() {});
                           });
                         } else {
-                          widget.task.deadline = null;
-                          widget.task.hasDeadline = false;
+                          curTask.deadline = null;
+                          curTask.hasDeadline = false;
                         }
                       },
                     ),

@@ -20,10 +20,12 @@ final class TaskDatabase {
 
   TaskDatabase._internal();
 
-  void addTask(ToDo task) {
-    _tasks.add(task);
-    _uncompletedTasks.add(task);
-    _saveTasks();
+  void saveTask(ToDo task) {
+    if (!_tasks.contains(task)) {
+      _tasks.add(task);
+      _uncompletedTasks.add(task);
+      _saveTasks();
+    }
   }
 
   void removeTask(ToDo task) {
@@ -41,6 +43,7 @@ final class TaskDatabase {
     bool? done,
     Importance? importance,
     DateTime? deadline,
+    bool? hasDeadline,
   }) {
     if (done != null) {
       if (done && !task.done) {
@@ -56,7 +59,20 @@ final class TaskDatabase {
     task.done = done ?? task.done;
     task.importance = importance ?? task.importance;
     task.deadline = deadline ?? task.deadline;
+    task.hasDeadline = hasDeadline ?? task.hasDeadline;
     _saveTasks();
+  }
+
+  void modifyTaskFromToDo(ToDo task, ToDo newTask) {
+    modifyTask(
+      task,
+      name: newTask.name,
+      description: newTask.description,
+      done: newTask.done,
+      importance: newTask.importance,
+      deadline: newTask.deadline,
+      hasDeadline: newTask.hasDeadline,
+    );
   }
 
   List<ToDo> get tasks {

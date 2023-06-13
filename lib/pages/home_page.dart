@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   void _scrollListener() {
     setState(() {
       _scrollPosition = _scrollController.position.pixels;
-      print(_scrollPosition);
     });
   }
 
@@ -90,7 +89,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             floating: true,
-            pinned: true,
+            //pinned: true,
           ),
           SliverPadding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
@@ -143,6 +142,27 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                         ),
+                      const Divider(),
+                      ListTile(
+                        onTap: () async {
+                          final _ = await Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) {
+                              return TaskPage(task: ToDo(), newTask: true);
+                            }),
+                          );
+                          setState(() {});
+                        },
+                        title: Text(
+                          'new',
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ).tr(),
+                        leading: const SizedBox(
+                          width: 50,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -153,7 +173,6 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // MyDialogs.showTaskDialog(context: context);
           final _ = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
               return TaskPage(task: ToDo(), newTask: true);
