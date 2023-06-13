@@ -27,16 +27,18 @@ class MyDialogs {
     );
   }
 
-  static void showConfirmDialog({
+  static Future<bool> showConfirmDialog({
     required BuildContext context,
     required String title,
     required String description,
     required Function onConfirmed,
     Function? onCancel,
-  }) {
+  }) async {
+    var res = false;
     final confirmButton = TextButton(
       onPressed: () {
         onConfirmed();
+        res = true;
         Navigator.of(context).pop();
       },
       child: const Text('confirm').tr(),
@@ -58,11 +60,12 @@ class MyDialogs {
         cancelButton,
       ],
     );
-    showDialog(
+    await showDialog(
       context: context,
       builder: (context) {
         return dialog;
       },
     );
+    return res;
   }
 }

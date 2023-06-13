@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/core/todo.dart';
 import 'package:todo_list/pages/task_page.dart';
+import 'package:todo_list/utils/my_dialogs.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.prefs});
@@ -104,45 +105,86 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: <Widget>[
                       for (var task in tasks)
-                        ListTile(
-                          title: Text(
-                            task.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              if (task.description != '')
-                                Text(
-                                  task.description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              if (task.hasDeadline) Text(task.deadline!.date)
-                            ],
-                          ),
-                          leading: Checkbox(
-                            value: task.done,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                database.modifyTask(task, done: value);
-                              });
-                            },
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.info_outline),
-                            onPressed: () async {
-                              final _ = await Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) {
-                                  return TaskPage(task: task);
-                                }),
+                        Dismissible(
+                          key: UniqueKey(),
+                          onDismissed: (direction) {
+                            setState(() {});
+                          },
+                          confirmDismiss: (direction) async {
+                            if (direction == DismissDirection.endToStart) {
+                              return await MyDialogs.showConfirmDialog(
+                                context: context,
+                                title: 'confirm_delete',
+                                description: 'confirm_delete_description',
+                                onConfirmed: () {
+                                  database.removeTask(task);
+                                },
                               );
-                              setState(() {});
-                            },
+                            } else {
+                              database.modifyTask(task, done: !task.done);
+                              return true;
+                            }
+                          },
+                          background: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF34C759),
+                              borderRadius: tasks.first == task
+                                  ? const BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          secondaryBackground: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF3B30),
+                              borderRadius: tasks.first == task
+                                  ? const BorderRadius.only(
+                                      topRight: Radius.circular(15),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              task.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                if (task.description != '')
+                                  Text(
+                                    task.description,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                if (task.hasDeadline) Text(task.deadline!.date)
+                              ],
+                            ),
+                            leading: Checkbox(
+                              value: task.done,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  database.modifyTask(task, done: value);
+                                });
+                              },
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.info_outline),
+                              onPressed: () async {
+                                final _ = await Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) {
+                                    return TaskPage(task: task);
+                                  }),
+                                );
+                                setState(() {});
+                              },
+                            ),
                           ),
                         ),
-                      const Divider(),
+                      if (tasks.isNotEmpty) const Divider(),
                       ListTile(
                         onTap: () async {
                           final _ = await Navigator.of(context).push(
