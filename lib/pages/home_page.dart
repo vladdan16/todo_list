@@ -4,7 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/core/todo.dart';
 import 'package:todo_list/pages/task_page.dart';
-import 'package:todo_list/utils/my_dialogs.dart';
+import 'package:todo_list/widgets/home_header_delegate.dart';
+import 'package:todo_list/widgets/my_dialogs.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.prefs});
@@ -57,41 +58,46 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar.large(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('todo_list').tr(),
-                    _getCompletedNumber() ?? const SizedBox(),
-                  ],
-                ),
-                IconButton(
-                  icon: Icon(_showCompleteTasks
-                      ? Icons.visibility_off
-                      : Icons.visibility),
-                  onPressed: () {
-                    setState(() {
-                      _showCompleteTasks = !_showCompleteTasks;
-                      widget.prefs.setBool(
-                        'show_completed_tasks',
-                        _showCompleteTasks,
-                      );
-                      if (_showCompleteTasks) {
-                        tasks = database.tasks;
-                      } else {
-                        tasks = database.uncompletedTasks;
-                      }
-                    });
-                  },
-                ),
-              ],
-            ),
+          SliverPersistentHeader(
+            pinned: true,
             floating: true,
-            //pinned: true,
+            delegate: HomeHeaderDelegate(completed: database.completed),
           ),
+          // SliverAppBar.large(
+          //   title: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: <Widget>[
+          //       Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: <Widget>[
+          //           const Text('todo_list').tr(),
+          //           _getCompletedNumber() ?? const SizedBox(),
+          //         ],
+          //       ),
+          //       IconButton(
+          //         icon: Icon(_showCompleteTasks
+          //             ? Icons.visibility_off
+          //             : Icons.visibility),
+          //         onPressed: () {
+          //           setState(() {
+          //             _showCompleteTasks = !_showCompleteTasks;
+          //             widget.prefs.setBool(
+          //               'show_completed_tasks',
+          //               _showCompleteTasks,
+          //             );
+          //             if (_showCompleteTasks) {
+          //               tasks = database.tasks;
+          //             } else {
+          //               tasks = database.uncompletedTasks;
+          //             }
+          //           });
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          //   floating: true,
+          //   //pinned: true,
+          // ),
           SliverPadding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
             sliver: SliverToBoxAdapter(
@@ -132,6 +138,7 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: tasks.first == task
                                     ? const BorderRadius.only(
                                         topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
                                       )
                                     : null,
                               ),
@@ -151,6 +158,7 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: tasks.first == task
                                     ? const BorderRadius.only(
                                         topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15),
                                       )
                                     : null,
                               ),

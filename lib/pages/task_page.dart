@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:todo_list/core/task_database.dart';
-import 'package:todo_list/utils/my_dialogs.dart';
+import 'package:todo_list/widgets/my_dialogs.dart';
 
 import '../core/todo.dart';
 
