@@ -62,6 +62,7 @@ class _TaskPageState extends State<TaskPage> {
                 onPressed: () {
                   _saveTask();
                   if (widget.task.name == '') {
+                    logger.i('User tries to save empty task!');
                     MyDialogs.showInfoDialog(
                       context: context,
                       title: 'empty_title',
@@ -69,6 +70,7 @@ class _TaskPageState extends State<TaskPage> {
                     );
                   } else {
                     database.saveTask(widget.task);
+                    logger.i('Task ${widget.task.name} has been saved');
                     Navigator.of(context).pop();
                   }
                 },
@@ -164,6 +166,9 @@ class _TaskPageState extends State<TaskPage> {
                               ),
                             ],
                             onChanged: (Importance? value) {
+                              logger.i(
+                                'User chose ${value?.name} importance for task ${curTask.name}',
+                              );
                               setState(() {
                                 curTask.importance =
                                     value ?? curTask.importance;
@@ -186,6 +191,7 @@ class _TaskPageState extends State<TaskPage> {
                               child: TextButton(
                                 onPressed: () {
                                   var currentDate = DateTime.now();
+                                  logger.i('Show Date Picker to user');
                                   showDatePicker(
                                     context: context,
                                     initialDate: currentDate.add(
@@ -205,35 +211,12 @@ class _TaskPageState extends State<TaskPage> {
                             ),
                         ],
                       ),
-                      // subtitle: curTask.deadline != null
-                      //     ? Align(
-                      //         alignment: Alignment.centerLeft,
-                      //         child: TextButton(
-                      //           onPressed: () {
-                      //             var currentDate = DateTime.now();
-                      //             showDatePicker(
-                      //               context: context,
-                      //               initialDate: currentDate.add(
-                      //                 const Duration(days: 1),
-                      //               ),
-                      //               firstDate: currentDate,
-                      //               lastDate: DateTime(2030),
-                      //             ).then((value) {
-                      //               if (value != null) {
-                      //                 curTask.deadline = value;
-                      //               }
-                      //               setState(() {});
-                      //             });
-                      //           },
-                      //           child: Text(curTask.deadline?.date ?? ''),
-                      //         ),
-                      //       )
-                      //     : null,
                       value: curTask.hasDeadline,
                       onChanged: (bool value) {
                         curTask.hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
+                          logger.i('Show Date Picker to user');
                           showDatePicker(
                             context: context,
                             initialDate: currentDate.add(
@@ -260,6 +243,7 @@ class _TaskPageState extends State<TaskPage> {
                       onPressed: widget.newTask
                           ? null
                           : () {
+                              logger.i('Ask user a confirmation to delete');
                               MyDialogs.showConfirmDialog(
                                 context: context,
                                 title: 'confirm_delete',

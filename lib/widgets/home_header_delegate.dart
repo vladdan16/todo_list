@@ -82,8 +82,8 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                       color: Theme.of(context).colorScheme.onBackground,
                     ),
                     TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      fontSize: 22,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                     progress,
                   ),

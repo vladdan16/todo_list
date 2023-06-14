@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/core/task_database.dart';
 import 'package:todo_list/core/todo.dart';
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   final database = TaskDatabase();
   late bool _showCompleteTasks;
   late List<ToDo> tasks;
+  final logger = Logger();
 
   @override
   void initState() {
@@ -44,6 +46,8 @@ class _HomePageState extends State<HomePage> {
                   tasks = _showCompleteTasks
                       ? database.tasks
                       : database.uncompletedTasks;
+                  logger.i(
+                      "Toggle visibility button. Show completed tasks: $_showCompleteTasks");
                   setState(() {});
                 }),
           ),
@@ -74,10 +78,17 @@ class _HomePageState extends State<HomePage> {
                                   description: 'confirm_delete_description',
                                   onConfirmed: () {
                                     database.removeTask(task);
+                                    logger.i(
+                                      'Task ${task.name} has been removed',
+                                    );
                                   },
                                 );
                               } else {
                                 database.modifyTask(task, done: !task.done);
+                                if (_showCompleteTasks) {
+                                  setState(() {});
+                                  return false;
+                                }
                                 return true;
                               }
                             },
@@ -171,6 +182,7 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () async {
                                   final _ = await Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context) {
+                                      logger.i('User opens a TaskPage');
                                       return TaskPage(task: task);
                                     }),
                                   );
@@ -184,6 +196,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: () async {
                             final _ = await Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
+                                logger.i('User opens a TaskPage');
                                 return TaskPage(task: ToDo(), newTask: true);
                               }),
                             );
@@ -214,6 +227,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           final _ = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
+              logger.i('User opens a TaskPage');
               return TaskPage(task: ToDo(), newTask: true);
             }),
           );
