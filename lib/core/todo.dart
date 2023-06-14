@@ -19,13 +19,12 @@ base class ToDo {
 
   factory ToDo.copyWith(ToDo toDo) {
     return ToDo(
-      name: toDo.name,
-      //description: toDo.description,
-      done: toDo.done,
-      importance: toDo.importance,
-      deadline: toDo.deadline,
-      hasDeadline: toDo.hasDeadline
-    );
+        name: toDo.name,
+        //description: toDo.description,
+        done: toDo.done,
+        importance: toDo.importance,
+        deadline: toDo.deadline,
+        hasDeadline: toDo.hasDeadline);
   }
 
   factory ToDo.fromJson(Map<String, dynamic> json) {

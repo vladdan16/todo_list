@@ -18,6 +18,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late TextEditingController titleTextController;
+
   //late TextEditingController descriptionTextController;
   late ToDo curTask;
   var logger = Logger();
@@ -85,6 +86,7 @@ class _TaskPageState extends State<TaskPage> {
             sliver: SliverToBoxAdapter(
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Card(
                       child: Padding(
@@ -101,38 +103,72 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    ListTile(
-                      title: const Text('importance').tr(),
-                      // subtitle: Text(curTask.importance.name).tr(),
-                      subtitle: DropdownButton<Importance>(
-                        value: curTask.importance,
-                        icon: null,
-                        items: <DropdownMenuItem<Importance>>[
-                          DropdownMenuItem<Importance>(
-                            value: Importance.no,
-                            child: Text(Importance.no.name).tr(),
-                          ),
-                          DropdownMenuItem<Importance>(
-                            value: Importance.low,
-                            child: Text(Importance.low.name).tr(),
-                          ),
-                          DropdownMenuItem<Importance>(
-                            value: Importance.high,
-                            child: Row(
-                              children: <Widget>[
-                                const Text('!! ',
-                                    style: TextStyle(color: Colors.red)),
-                                Text(Importance.high.name).tr(),
-                              ],
-                            ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('importance').tr(),
+                          // subtitle: Text(curTask.importance.name).tr(),
+                          DropdownButton<Importance>(
+                            value: curTask.importance,
+                            icon: const SizedBox(),
+                            underline: const SizedBox(),
+                            items: <DropdownMenuItem<Importance>>[
+                              DropdownMenuItem<Importance>(
+                                value: Importance.no,
+                                child: Text(
+                                  Importance.no.name,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground
+                                        .withOpacity(0.8),
+                                    fontSize: 15,
+                                  ),
+                                ).tr(),
+                              ),
+                              DropdownMenuItem<Importance>(
+                                value: Importance.low,
+                                child: Text(
+                                  Importance.low.name,
+                                  style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground
+                                        .withOpacity(0.8),
+                                    fontSize: 15,
+                                  ),
+                                ).tr(),
+                              ),
+                              DropdownMenuItem<Importance>(
+                                value: Importance.high,
+                                child: Row(
+                                  children: <Widget>[
+                                    const Text('!! ',
+                                        style: TextStyle(color: Colors.red)),
+                                    Text(
+                                      Importance.high.name,
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        fontSize: 15,
+                                      ),
+                                    ).tr(),
+                                  ],
+                                ),
+                              ),
+                            ],
+                            onChanged: (Importance? value) {
+                              setState(() {
+                                curTask.importance =
+                                    value ?? curTask.importance;
+                                // logger.i(value?.name);
+                              });
+                            },
                           ),
                         ],
-                        onChanged: (Importance? value) {
-                          setState(() {
-                            curTask.importance = value ?? curTask.importance;
-                            // logger.i(value?.name);
-                          });
-                        },
                       ),
                     ),
                     const Divider(),
