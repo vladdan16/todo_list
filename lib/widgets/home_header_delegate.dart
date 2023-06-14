@@ -20,26 +20,37 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
       decoration: BoxDecoration(
         color: Color.lerp(
           Theme.of(context).colorScheme.background,
-          Theme.of(context).colorScheme.surfaceVariant,
+          Theme.of(context).colorScheme.secondaryContainer,
           progress,
         ),
         boxShadow: [
-          if (shrinkOffset == maxExtent)
-            BoxShadow(
-              color: Theme.of(context).colorScheme.shadow,
-              spreadRadius: 1,
-              blurRadius: 10,
-              offset: const Offset(0, 1),
-            ),
+          BoxShadow.lerp(
+                const BoxShadow(),
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow,
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 1),
+                ),
+                progress > 0.5 ? progress : 0,
+              ) ??
+              const BoxShadow(),
+          // if (shrinkOffset == maxExtent)
+          //   BoxShadow(
+          //     color: Theme.of(context).colorScheme.shadow,
+          //     spreadRadius: 1,
+          //     blurRadius: 10,
+          //     offset: const Offset(0, 1),
+          //   ),
         ],
       ),
       child: SafeArea(
         child: AnimatedContainer(
           width: double.infinity,
           height: double.infinity,
-          duration: const Duration(microseconds: 100),
+          duration: const Duration(microseconds: 50),
           padding: EdgeInsets.lerp(
-            const EdgeInsets.only(left: 60, bottom: 8, right: 15),
+            const EdgeInsets.only(left: 40, bottom: 8, right: 15),
             const EdgeInsets.only(left: 15, bottom: 8, right: 15),
             progress,
           ),
@@ -58,7 +69,7 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                       fontSize: 16,
                       color: Colors.transparent,
                     ),
-                    progress,
+                    progress < 0.7 ? progress : 1,
                   ),
                 ),
               ),
