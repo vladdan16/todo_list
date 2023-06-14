@@ -97,18 +97,21 @@ class _TaskPageState extends State<TaskPage> {
                             hintText: 'task_description'.tr(),
                             border: InputBorder.none,
                           ),
-                          minLines: 3,
+                          minLines: 4,
                           maxLines: null,
                         ),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 25),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('importance').tr(),
+                          const Text(
+                            'importance',
+                            style: TextStyle(fontSize: 16),
+                          ).tr(),
                           // subtitle: Text(curTask.importance.name).tr(),
                           DropdownButton<Importance>(
                             value: curTask.importance,
@@ -173,10 +176,59 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     const Divider(),
                     SwitchListTile(
-                      title: const Text('deadline').tr(),
-                      subtitle: curTask.deadline != null
-                          ? Text(curTask.deadline?.date ?? '')
-                          : null,
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('  ${'deadline'.tr()}'),
+                          if (curTask.deadline != null)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton(
+                                onPressed: () {
+                                  var currentDate = DateTime.now();
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: currentDate.add(
+                                      const Duration(days: 1),
+                                    ),
+                                    firstDate: currentDate,
+                                    lastDate: DateTime(2030),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      curTask.deadline = value;
+                                    }
+                                    setState(() {});
+                                  });
+                                },
+                                child: Text(curTask.deadline?.date ?? ''),
+                              ),
+                            ),
+                        ],
+                      ),
+                      // subtitle: curTask.deadline != null
+                      //     ? Align(
+                      //         alignment: Alignment.centerLeft,
+                      //         child: TextButton(
+                      //           onPressed: () {
+                      //             var currentDate = DateTime.now();
+                      //             showDatePicker(
+                      //               context: context,
+                      //               initialDate: currentDate.add(
+                      //                 const Duration(days: 1),
+                      //               ),
+                      //               firstDate: currentDate,
+                      //               lastDate: DateTime(2030),
+                      //             ).then((value) {
+                      //               if (value != null) {
+                      //                 curTask.deadline = value;
+                      //               }
+                      //               setState(() {});
+                      //             });
+                      //           },
+                      //           child: Text(curTask.deadline?.date ?? ''),
+                      //         ),
+                      //       )
+                      //     : null,
                       value: curTask.hasDeadline,
                       onChanged: (bool value) {
                         curTask.hasDeadline = value;
@@ -200,6 +252,7 @@ class _TaskPageState extends State<TaskPage> {
                           curTask.deadline = null;
                           curTask.hasDeadline = false;
                         }
+                        setState(() {});
                       },
                     ),
                     const Divider(),

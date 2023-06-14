@@ -29,6 +29,9 @@ final class TaskDatabase {
   }
 
   void removeTask(ToDo task) {
+    if (task.done) {
+      _completed--;
+    }
     _tasks.remove(task);
     if (_uncompletedTasks.contains(task)) {
       _uncompletedTasks.remove(task);
