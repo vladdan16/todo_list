@@ -114,10 +114,21 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             child: ListTile(
-                              title: Text(
-                                task.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              title: Row(
+                                children: [
+                                  if (task.importance == Importance.low)
+                                    const Icon(Icons.arrow_downward),
+                                  if (task.importance == Importance.high)
+                                    const Text(
+                                      '!! ',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  Text(
+                                    task.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,13 +143,22 @@ class _HomePageState extends State<HomePage> {
                                     Text(task.deadline!.date)
                                 ],
                               ),
-                              leading: Checkbox(
-                                value: task.done,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    database.modifyTask(task, done: value);
-                                  });
-                                },
+                              leading: Theme(
+                                data: ThemeData(
+                                  unselectedWidgetColor:
+                                      task.importance == Importance.high
+                                          ? Colors.red
+                                          : Colors.grey,
+                                  primarySwatch: Colors.green,
+                                ),
+                                child: Checkbox(
+                                  value: task.done,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      database.modifyTask(task, done: value);
+                                    });
+                                  },
+                                ),
                               ),
                               trailing: IconButton(
                                 icon: const Icon(Icons.info_outline),
