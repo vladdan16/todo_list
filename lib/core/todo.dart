@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 base class ToDo {
   String name;
-  String description;
+  //String description;
   bool done;
   Importance importance;
   DateTime? deadline;
@@ -10,7 +10,7 @@ base class ToDo {
 
   ToDo({
     this.name = '',
-    this.description = '',
+    //this.description = '',
     this.done = false,
     this.importance = Importance.no,
     this.deadline,
@@ -20,7 +20,7 @@ base class ToDo {
   factory ToDo.copyWith(ToDo toDo) {
     return ToDo(
       name: toDo.name,
-      description: toDo.description,
+      //description: toDo.description,
       done: toDo.done,
       importance: toDo.importance,
       deadline: toDo.deadline,
@@ -30,7 +30,7 @@ base class ToDo {
 
   factory ToDo.fromJson(Map<String, dynamic> json) {
     String name = json['name'];
-    String description = json['description'];
+    //String description = json['description'];
     bool done = json['done'];
     Importance importance = importanceFromString(json['importance']);
     DateTime? deadline =
@@ -38,7 +38,7 @@ base class ToDo {
     bool hasDeadline = json['hasDeadline'];
     return ToDo(
       name: name,
-      description: description,
+      //description: description,
       done: done,
       importance: importance,
       deadline: deadline,
@@ -49,7 +49,7 @@ base class ToDo {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'description': description,
+      //'description': description,
       'done': done,
       'importance': importanceToString(importance),
       'deadline': deadline?.toIso8601String(),

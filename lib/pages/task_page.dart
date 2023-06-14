@@ -18,23 +18,23 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late TextEditingController titleTextController;
-  late TextEditingController descriptionTextController;
+  //late TextEditingController descriptionTextController;
   late ToDo curTask;
   var logger = Logger();
   final database = TaskDatabase();
 
   void _saveTask() {
     curTask.name = titleTextController.text;
-    curTask.description = descriptionTextController.text;
+    //curTask.description = descriptionTextController.text;
     if (!widget.newTask) database.modifyTaskFromToDo(widget.task, curTask);
   }
 
   @override
   void initState() {
     titleTextController = TextEditingController(text: widget.task.name);
-    descriptionTextController = TextEditingController(
-      text: widget.task.description,
-    );
+    //descriptionTextController = TextEditingController(
+    //  text: widget.task.description,
+    //);
     if (widget.newTask) {
       curTask = widget.task;
     } else {
@@ -86,28 +86,11 @@ class _TaskPageState extends State<TaskPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: TextField(
-                        controller: titleTextController,
-                        decoration: InputDecoration(
-                          hintText: 'task_title'.tr(),
-                        ),
-                        style: TextStyle(
-                          fontSize: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.fontSize,
-                        ),
-                        textInputAction: TextInputAction.next,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
                     Card(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: TextField(
-                          controller: descriptionTextController,
+                          controller: titleTextController,
                           decoration: InputDecoration(
                             hintText: 'task_description'.tr(),
                             border: InputBorder.none,
@@ -151,42 +134,6 @@ class _TaskPageState extends State<TaskPage> {
                           });
                         },
                       ),
-                      // onTap: () {
-                      //   final overlay = Overlay.of(context)
-                      //       .context
-                      //       .findRenderObject() as RenderBox;
-                      //   showMenu(
-                      //     context: context,
-                      //     position: RelativeRect.fromRect(
-                      //       Rect.fromPoints(
-                      //         overlay.localToGlobal(Offset.zero),
-                      //         overlay.localToGlobal(
-                      //           overlay.size.bottomRight(Offset.zero),
-                      //         ),
-                      //       ),
-                      //       Offset.zero & overlay.size,
-                      //     ),
-                      //     items: <PopupMenuEntry<Importance>>[
-                      //       PopupMenuItem<Importance>(
-                      //         value: Importance.no,
-                      //         child: Text(Importance.no.name).tr(),
-                      //       ),
-                      //       PopupMenuItem<Importance>(
-                      //         value: Importance.low,
-                      //         child: Text(Importance.low.name).tr(),
-                      //       ),
-                      //       PopupMenuItem<Importance>(
-                      //         value: Importance.high,
-                      //         child: Text(Importance.high.name).tr(),
-                      //       ),
-                      //     ],
-                      //   ).then((Importance? value) {
-                      //     setState(() {
-                      //       curTask.importance = value ?? curTask.importance;
-                      //       //logger.i(value?.name);
-                      //     });
-                      //   });
-                      // },
                     ),
                     const Divider(),
                     SwitchListTile(

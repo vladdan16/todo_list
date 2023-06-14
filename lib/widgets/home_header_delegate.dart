@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 
 class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
   final int completed;
+  bool visibility;
+  final void Function() onChangeVisibility;
 
-  HomeHeaderDelegate({required this.completed});
+  HomeHeaderDelegate({
+    required this.completed,
+    required this.onChangeVisibility,
+    required this.visibility,
+  });
 
   @override
   Widget build(
@@ -35,13 +41,6 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                 progress > 0.5 ? progress : 0,
               ) ??
               const BoxShadow(),
-          // if (shrinkOffset == maxExtent)
-          //   BoxShadow(
-          //     color: Theme.of(context).colorScheme.shadow,
-          //     spreadRadius: 1,
-          //     blurRadius: 10,
-          //     offset: const Offset(0, 1),
-          //   ),
         ],
       ),
       child: SafeArea(
@@ -89,6 +88,17 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                     progress,
                   ),
                 ).tr(),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: IconButton(
+                  onPressed: onChangeVisibility,
+                  icon: Icon(
+                    visibility ? Icons.visibility_off : Icons.visibility,
+                    //color: Colors.blue,
+                  ),
+                ),
               ),
             ],
           ),

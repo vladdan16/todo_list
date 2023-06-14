@@ -36,7 +36,16 @@ class _HomePageState extends State<HomePage> {
           SliverPersistentHeader(
             pinned: true,
             floating: true,
-            delegate: HomeHeaderDelegate(completed: database.completed),
+            delegate: HomeHeaderDelegate(
+                completed: database.completed,
+                visibility: _showCompleteTasks,
+                onChangeVisibility: () {
+                  _showCompleteTasks = !_showCompleteTasks;
+                  tasks = _showCompleteTasks
+                      ? database.tasks
+                      : database.uncompletedTasks;
+                  setState(() {});
+                }),
           ),
           SliverPadding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
@@ -116,33 +125,30 @@ class _HomePageState extends State<HomePage> {
                             child: ListTile(
                               title: Row(
                                 children: [
-                                  if (task.importance == Importance.low)
+                                  if (task.importance == Importance.low &&
+                                      !task.done)
                                     const Icon(Icons.arrow_downward),
-                                  if (task.importance == Importance.high)
+                                  if (task.importance == Importance.high &&
+                                      !task.done)
                                     const Text(
                                       '!! ',
                                       style: TextStyle(color: Colors.red),
                                     ),
                                   Text(
                                     task.name,
-                                    maxLines: 1,
+                                    maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      decoration: task.done
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                    ),
                                   ),
                                 ],
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  if (task.description != '')
-                                    Text(
-                                      task.description,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  if (task.hasDeadline)
-                                    Text(task.deadline!.date)
-                                ],
-                              ),
+                              subtitle: task.hasDeadline
+                                  ? Text(task.deadline!.date)
+                                  : null,
                               leading: Theme(
                                 data: ThemeData(
                                   unselectedWidgetColor:
