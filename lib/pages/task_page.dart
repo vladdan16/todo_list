@@ -120,44 +120,73 @@ class _TaskPageState extends State<TaskPage> {
                     const SizedBox(height: 10),
                     ListTile(
                       title: const Text('importance').tr(),
-                      subtitle: Text(curTask.importance.name).tr(),
-                      onTap: () {
-                        final overlay = Overlay.of(context)
-                            .context
-                            .findRenderObject() as RenderBox;
-                        showMenu(
-                          context: context,
-                          position: RelativeRect.fromRect(
-                            Rect.fromPoints(
-                              overlay.localToGlobal(Offset.zero),
-                              overlay.localToGlobal(
-                                overlay.size.bottomRight(Offset.zero),
-                              ),
-                            ),
-                            Offset.zero & overlay.size,
+                      // subtitle: Text(curTask.importance.name).tr(),
+                      subtitle: DropdownButton<Importance>(
+                        value: curTask.importance,
+                        icon: null,
+                        items: <DropdownMenuItem<Importance>>[
+                          DropdownMenuItem<Importance>(
+                            value: Importance.no,
+                            child: Text(Importance.no.name).tr(),
                           ),
-                          items: <PopupMenuEntry<Importance>>[
-                            PopupMenuItem<Importance>(
-                              value: Importance.no,
-                              child: Text(Importance.no.name).tr(),
+                          DropdownMenuItem<Importance>(
+                            value: Importance.low,
+                            child: Text(Importance.low.name).tr(),
+                          ),
+                          DropdownMenuItem<Importance>(
+                            value: Importance.high,
+                            child: Row(
+                              children: <Widget>[
+                                const Text('!! ',
+                                    style: TextStyle(color: Colors.red)),
+                                Text(Importance.high.name).tr(),
+                              ],
                             ),
-                            PopupMenuItem<Importance>(
-                              value: Importance.low,
-                              child: Text(Importance.low.name).tr(),
-                            ),
-                            PopupMenuItem<Importance>(
-                              value: Importance.high,
-                              child: Text(Importance.high.name).tr(),
-                            ),
-                          ],
-                        ).then((Importance? value) {
+                          ),
+                        ],
+                        onChanged: (Importance? value) {
                           setState(() {
-                            curTask.importance =
-                                value ?? curTask.importance;
-                            //logger.i(value?.name);
+                            curTask.importance = value ?? curTask.importance;
+                            // logger.i(value?.name);
                           });
-                        });
-                      },
+                        },
+                      ),
+                      // onTap: () {
+                      //   final overlay = Overlay.of(context)
+                      //       .context
+                      //       .findRenderObject() as RenderBox;
+                      //   showMenu(
+                      //     context: context,
+                      //     position: RelativeRect.fromRect(
+                      //       Rect.fromPoints(
+                      //         overlay.localToGlobal(Offset.zero),
+                      //         overlay.localToGlobal(
+                      //           overlay.size.bottomRight(Offset.zero),
+                      //         ),
+                      //       ),
+                      //       Offset.zero & overlay.size,
+                      //     ),
+                      //     items: <PopupMenuEntry<Importance>>[
+                      //       PopupMenuItem<Importance>(
+                      //         value: Importance.no,
+                      //         child: Text(Importance.no.name).tr(),
+                      //       ),
+                      //       PopupMenuItem<Importance>(
+                      //         value: Importance.low,
+                      //         child: Text(Importance.low.name).tr(),
+                      //       ),
+                      //       PopupMenuItem<Importance>(
+                      //         value: Importance.high,
+                      //         child: Text(Importance.high.name).tr(),
+                      //       ),
+                      //     ],
+                      //   ).then((Importance? value) {
+                      //     setState(() {
+                      //       curTask.importance = value ?? curTask.importance;
+                      //       //logger.i(value?.name);
+                      //     });
+                      //   });
+                      // },
                     ),
                     const Divider(),
                     SwitchListTile(

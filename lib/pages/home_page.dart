@@ -20,35 +20,11 @@ class _HomePageState extends State<HomePage> {
   final database = TaskDatabase();
   late bool _showCompleteTasks;
   late List<ToDo> tasks;
-  late final ScrollController _scrollController;
-  double _scrollPosition = 0;
-
-  void _scrollListener() {
-    setState(() {
-      _scrollPosition = _scrollController.position.pixels;
-    });
-  }
-
-  Widget? _getCompletedNumber() {
-    if (_scrollPosition == 0) {
-      return Text(
-        '${'completed'.tr()} - ${database.completed}',
-        style: TextStyle(
-          fontSize: 15,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      );
-    } else {
-      return null;
-    }
-  }
 
   @override
   void initState() {
     _showCompleteTasks = widget.prefs.getBool('show_completed_tasks') ?? true;
     tasks = _showCompleteTasks ? database.tasks : database.uncompletedTasks;
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
@@ -56,48 +32,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        controller: _scrollController,
         slivers: [
           SliverPersistentHeader(
             pinned: true,
             floating: true,
             delegate: HomeHeaderDelegate(completed: database.completed),
           ),
-          // SliverAppBar.large(
-          //   title: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: <Widget>[
-          //       Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: <Widget>[
-          //           const Text('todo_list').tr(),
-          //           _getCompletedNumber() ?? const SizedBox(),
-          //         ],
-          //       ),
-          //       IconButton(
-          //         icon: Icon(_showCompleteTasks
-          //             ? Icons.visibility_off
-          //             : Icons.visibility),
-          //         onPressed: () {
-          //           setState(() {
-          //             _showCompleteTasks = !_showCompleteTasks;
-          //             widget.prefs.setBool(
-          //               'show_completed_tasks',
-          //               _showCompleteTasks,
-          //             );
-          //             if (_showCompleteTasks) {
-          //               tasks = database.tasks;
-          //             } else {
-          //               tasks = database.uncompletedTasks;
-          //             }
-          //           });
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          //   floating: true,
-          //   //pinned: true,
-          // ),
           SliverPadding(
             padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
             sliver: SliverToBoxAdapter(
