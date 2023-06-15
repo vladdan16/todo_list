@@ -25,7 +25,25 @@ With this application you can easily create tasks, choose priority for each task
 
 * [Dart programming language](https://dart.dev)
 * [Flutter framework](https://flutter.dev)
-* Different flutter libraries. List available at [pubspec.yaml file](https://github.com/vladdan16/todo_list/blob/master/pubspec.yaml)
+* Different flutter libraries. List available at [pubspec.yaml](https://github.com/vladdan16/todo_list/blob/master/pubspec.yaml) file
+
+## Demonstration
+
+<p>Home page with tasks:</p>
+<p float="left">
+ <img src="./screens/main_screen.png" width="230" height="490">
+</p>
+<p>Home page with tasks and collapsed AppBar:</p>
+<p float="left">
+ <img src="./screens/main_screen_2.png" width="230" height="490">
+</p>
+<p>Adding and editing task page:</p>
+<p float="left">
+ <img src="./screens/task_screen.png" width="230" height="490">
+</p>
+
+## Android release
+You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheJGOPz0Hor4dlZOTw?e=4W2HyL).
 
 ## Project installation and run
 
