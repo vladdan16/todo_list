@@ -19,6 +19,7 @@ With this application you can easily create tasks, choose priority for each task
 * Smooth animations
 * Saving tasks in phone storage
 * Adaptive light and dark themes
+* Dynamic colors (available from Android S+)
 * Adaptive language (english and russian are supported)
 
 ## Technologies and materials used
