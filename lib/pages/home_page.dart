@@ -145,14 +145,16 @@ class _HomePageState extends State<HomePage> {
                                       '!! ',
                                       style: TextStyle(color: Colors.red),
                                     ),
-                                  Text(
-                                    task.name,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      decoration: task.done
-                                          ? TextDecoration.lineThrough
-                                          : null,
+                                  Expanded(
+                                    child: Text(
+                                      task.name,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        decoration: task.done
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                      ),
                                     ),
                                   ),
                                 ],
