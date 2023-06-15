@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class MyDialogs {
+final class MyDialogs {
   static void showInfoDialog({
     required BuildContext context,
     required String title,

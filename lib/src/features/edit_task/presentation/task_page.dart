@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:todo_list/core/task_database.dart';
-import 'package:todo_list/widgets/my_dialogs.dart';
+import 'package:todo_list/src/features/edit_task/application/task_service.dart';
 
-import '../core/todo.dart';
+import '../../../common_widgets/my_dialogs.dart';
+import '../../../core/todo.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key, required this.task, this.newTask = false});
@@ -17,30 +17,14 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  late TaskService service;
   late TextEditingController titleTextController;
-
-  //late TextEditingController descriptionTextController;
-  late ToDo curTask;
   var logger = Logger();
-  final database = TaskDatabase();
-
-  void _saveTask() {
-    curTask.name = titleTextController.text;
-    //curTask.description = descriptionTextController.text;
-    if (!widget.newTask) database.modifyTaskFromToDo(widget.task, curTask);
-  }
 
   @override
   void initState() {
+    service = TaskService(widget.task, widget.newTask);
     titleTextController = TextEditingController(text: widget.task.name);
-    //descriptionTextController = TextEditingController(
-    //  text: widget.task.description,
-    //);
-    if (widget.newTask) {
-      curTask = widget.task;
-    } else {
-      curTask = ToDo.copyWith(widget.task);
-    }
     super.initState();
   }
 
@@ -60,8 +44,8 @@ class _TaskPageState extends State<TaskPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  _saveTask();
-                  if (widget.task.name == '') {
+                  bool res = service.saveTaskText(titleTextController.text);
+                  if (res) {
                     logger.i('User tries to save empty task!');
                     MyDialogs.showInfoDialog(
                       context: context,
@@ -69,7 +53,7 @@ class _TaskPageState extends State<TaskPage> {
                       description: 'empty_title_description',
                     );
                   } else {
-                    database.saveTask(widget.task);
+                    service.saveTask();
                     logger.i('Task ${widget.task.name} has been saved');
                     Navigator.of(context).pop();
                   }
@@ -116,7 +100,7 @@ class _TaskPageState extends State<TaskPage> {
                           ).tr(),
                           // subtitle: Text(curTask.importance.name).tr(),
                           DropdownButton<Importance>(
-                            value: curTask.importance,
+                            value: service.curTask.importance,
                             icon: const SizedBox(),
                             underline: const SizedBox(),
                             items: <DropdownMenuItem<Importance>>[
@@ -167,11 +151,11 @@ class _TaskPageState extends State<TaskPage> {
                             ],
                             onChanged: (Importance? value) {
                               logger.i(
-                                'User chose ${value?.name} importance for task ${curTask.name}',
+                                'User chose ${value?.name} importance for task ${service.curTask.name}',
                               );
                               setState(() {
-                                curTask.importance =
-                                    value ?? curTask.importance;
+                                service.curTask.importance =
+                                    value ?? service.curTask.importance;
                                 // logger.i(value?.name);
                               });
                             },
@@ -185,7 +169,7 @@ class _TaskPageState extends State<TaskPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('  ${'deadline'.tr()}'),
-                          if (curTask.deadline != null)
+                          if (service.curTask.deadline != null)
                             Align(
                               alignment: Alignment.centerLeft,
                               child: TextButton(
@@ -201,19 +185,19 @@ class _TaskPageState extends State<TaskPage> {
                                     lastDate: DateTime(2030),
                                   ).then((value) {
                                     if (value != null) {
-                                      curTask.deadline = value;
+                                      service.curTask.deadline = value;
                                     }
                                     setState(() {});
                                   });
                                 },
-                                child: Text(curTask.deadline?.date ?? ''),
+                                child: Text(service.curTask.deadline?.date ?? ''),
                               ),
                             ),
                         ],
                       ),
-                      value: curTask.hasDeadline,
+                      value: service.curTask.hasDeadline,
                       onChanged: (bool value) {
-                        curTask.hasDeadline = value;
+                        service.curTask.hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
                           logger.i('Show Date Picker to user');
@@ -225,15 +209,15 @@ class _TaskPageState extends State<TaskPage> {
                             firstDate: currentDate,
                             lastDate: DateTime(2030),
                           ).then((value) {
-                            curTask.deadline = value;
+                            service.curTask.deadline = value;
                             if (value == null) {
-                              curTask.hasDeadline = false;
+                              service.curTask.hasDeadline = false;
                             }
                             setState(() {});
                           });
                         } else {
-                          curTask.deadline = null;
-                          curTask.hasDeadline = false;
+                          service.curTask.deadline = null;
+                          service.curTask.hasDeadline = false;
                         }
                         setState(() {});
                       },
@@ -249,7 +233,7 @@ class _TaskPageState extends State<TaskPage> {
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
-                                  database.removeTask(widget.task);
+                                  service.removeTask();
                                   Navigator.of(context).pop();
                                   setState(() {});
                                 },

@@ -68,7 +68,7 @@ class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                       fontSize: 16,
                       color: Colors.transparent,
                     ),
-                    progress < 0.7 ? progress : 1,
+                    progress * 2 > 1 ? 1 : progress * 2,
                   ),
                 ),
               ),

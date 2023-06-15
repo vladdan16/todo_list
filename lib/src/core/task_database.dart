@@ -42,7 +42,6 @@ final class TaskDatabase {
   void modifyTask(
     ToDo task, {
     String? name,
-    //String? description,
     bool? done,
     Importance? importance,
     DateTime? deadline,
@@ -58,7 +57,6 @@ final class TaskDatabase {
       }
     }
     task.name = name ?? task.name;
-    //task.description = description ?? task.description;
     task.done = done ?? task.done;
     task.importance = importance ?? task.importance;
     task.deadline = deadline ?? task.deadline;
@@ -70,7 +68,6 @@ final class TaskDatabase {
     modifyTask(
       task,
       name: newTask.name,
-      //description: newTask.description,
       done: newTask.done,
       importance: newTask.importance,
       deadline: newTask.deadline,

@@ -2,11 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_list/core/task_database.dart';
-import 'package:todo_list/core/todo.dart';
-import 'package:todo_list/pages/task_page.dart';
-import 'package:todo_list/widgets/home_header_delegate.dart';
-import 'package:todo_list/widgets/my_dialogs.dart';
+import 'package:todo_list/src/features/edit_task/presentation/task_page.dart';
+import 'package:todo_list/src/features/task_list/application/home_service.dart';
+
+import '../../../common_widgets/my_dialogs.dart';
+import '../../../core/todo.dart';
+import 'home_header_delegate.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.prefs});
@@ -18,15 +19,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final database = TaskDatabase();
-  late bool _showCompleteTasks;
-  late List<ToDo> tasks;
   final logger = Logger();
+  late HomeService service;
 
   @override
   void initState() {
-    _showCompleteTasks = widget.prefs.getBool('show_completed_tasks') ?? true;
-    tasks = _showCompleteTasks ? database.tasks : database.uncompletedTasks;
+    service = HomeService(widget.prefs);
     super.initState();
   }
 
@@ -39,15 +37,10 @@ class _HomePageState extends State<HomePage> {
             pinned: true,
             floating: true,
             delegate: HomeHeaderDelegate(
-                completed: database.completed,
-                visibility: _showCompleteTasks,
+                completed: service.completed,
+                visibility: service.showCompleteTasks,
                 onChangeVisibility: () {
-                  _showCompleteTasks = !_showCompleteTasks;
-                  tasks = _showCompleteTasks
-                      ? database.tasks
-                      : database.uncompletedTasks;
-                  logger.i(
-                      "Toggle visibility button. Show completed tasks: $_showCompleteTasks");
+                  service.changeVisibility();
                   setState(() {});
                 }),
           ),
@@ -64,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        for (var task in tasks)
+                        for (var task in service.tasks)
                           Dismissible(
                             key: UniqueKey(),
                             onDismissed: (direction) {
@@ -77,15 +70,15 @@ class _HomePageState extends State<HomePage> {
                                   title: 'confirm_delete',
                                   description: 'confirm_delete_description',
                                   onConfirmed: () {
-                                    database.removeTask(task);
+                                    service.removeTask(task);
                                     logger.i(
                                       'Task ${task.name} has been removed',
                                     );
                                   },
                                 );
                               } else {
-                                database.modifyTask(task, done: !task.done);
-                                if (_showCompleteTasks) {
+                                service.modifyTask(task, done: !task.done);
+                                if (service.showCompleteTasks) {
                                   setState(() {});
                                   return false;
                                 }
@@ -95,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                             background: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xFF34C759),
-                                borderRadius: tasks.first == task
+                                borderRadius: service.tasks.first == task
                                     ? const BorderRadius.only(
                                         topLeft: Radius.circular(15),
                                         topRight: Radius.circular(15),
@@ -115,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                             secondaryBackground: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFF3B30),
-                                borderRadius: tasks.first == task
+                                borderRadius: service.tasks.first == task
                                     ? const BorderRadius.only(
                                         topRight: Radius.circular(15),
                                         topLeft: Radius.circular(15),
@@ -174,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                                   value: task.done,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      database.modifyTask(task, done: value);
+                                      service.modifyTask(task, done: value);
                                     });
                                   },
                                 ),
@@ -193,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                        if (tasks.isNotEmpty) const Divider(),
+                        if (service.tasks.isNotEmpty) const Divider(),
                         ListTile(
                           onTap: () async {
                             final _ = await Navigator.of(context).push(
