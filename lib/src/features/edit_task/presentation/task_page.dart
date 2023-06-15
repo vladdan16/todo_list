@@ -190,7 +190,9 @@ class _TaskPageState extends State<TaskPage> {
                                     setState(() {});
                                   });
                                 },
-                                child: Text(service.curTask.deadline?.date ?? ''),
+                                child: Text(
+                                  service.curTask.deadline?.date ?? '',
+                                ),
                               ),
                             ),
                         ],
