@@ -50,7 +50,7 @@ base class ToDo {
       'name': name,
       //'description': description,
       'done': done,
-      'importance': importanceToString(importance),
+      'importance': importance.name,
       'deadline': deadline?.toIso8601String(),
       'hasDeadline': hasDeadline,
     };
@@ -58,17 +58,6 @@ base class ToDo {
 }
 
 enum Importance { no, low, high }
-
-String importanceToString(Importance importance) {
-  switch (importance) {
-    case Importance.low:
-      return 'low';
-    case Importance.high:
-      return 'high';
-    default:
-      return 'no';
-  }
-}
 
 Importance importanceFromString(String value) {
   switch (value) {
