@@ -1,5 +1,8 @@
+import 'package:local_storage_todos_api/local_storage_todos_api.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:todo_api/todo_api.dart';
 
+const String dbPath = 'todo_database.db';
 const String tableTodo = 'todo';
 const String columnId = '_id';
 const String columnText = 'text';
@@ -12,23 +15,48 @@ const String columnChangedAt = 'changed_at';
 const String columnLastUpdatedBy = 'last_updated_by';
 
 class LocalStorageTodosApi implements TodoApi {
-  const LocalStorageTodosApi();
+  late TodoProvider todoProvider;
+  final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(const []);
 
-  @override
-  Future<void> deleteTodo(String id) {
-    // TODO: implement deleteTodo
-    throw UnimplementedError();
+  LocalStorageTodosApi._create();
+
+  static Future<LocalStorageTodosApi> create() async {
+    var api = LocalStorageTodosApi._create();
+    await api._init();
+    return api;
+  }
+
+  Future<void> _init() async {
+    var list = await todoProvider.getAll();
+    _todoStreamController.add(list);
   }
 
   @override
-  Stream<List<Todo>> getTodoList() {
-    // TODO: implement getTodoList
-    throw UnimplementedError();
+  Stream<List<Todo>> getTodoList() => _todoStreamController.asBroadcastStream();
+
+  @override
+  Future<void> saveTodo(Todo todo) async {
+    final todos = [..._todoStreamController.value];
+    final todoIndex = todos.indexWhere((e) => e.id == todo.id);
+    if (todoIndex >= 0) {
+      todos[todoIndex] = todo;
+    } else {
+      todos.add(todo);
+    }
+    _todoStreamController.add(todos);
+    todoProvider.update(todo);
   }
 
   @override
-  Future<void> saveTodo(Todo todo) {
-    // TODO: implement saveTodo
-    throw UnimplementedError();
+  Future<void> deleteTodo(String id) async {
+    final todos = [..._todoStreamController.value];
+    final todoIndex = todos.indexWhere((e) => e.id == id);
+    if (todoIndex == -1) {
+      throw Exception('Unable to delete non-existing todo');
+    } else {
+      todos.removeAt(todoIndex);
+      _todoStreamController.add(todos);
+      todoProvider.delete(id);
+    }
   }
 }

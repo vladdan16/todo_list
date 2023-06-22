@@ -5,7 +5,23 @@ import 'package:todo_api/todo_api.dart';
 final class TodoProvider {
   late Database db;
 
-  Future<void> open(String path) async {
+  TodoProvider._create();
+
+  static Future<TodoProvider> create() async {
+    var todoProvider = TodoProvider._create();
+    await todoProvider._open(dbPath);
+    return todoProvider;
+  }
+
+  Future<List<Todo>> getAll() async {
+    final List<Map<String, dynamic>> maps = await db.query(tableTodo);
+    return List.generate(
+      maps.length,
+      (i) => Todo.fromJson(maps[i]),
+    );
+  }
+
+  Future<void> _open(String path) async {
     db = await openDatabase(
       path,
       version: 1,
@@ -60,16 +76,16 @@ final class TodoProvider {
       where: '$columnId = ?',
       whereArgs: [id],
     );
-
-    Future<void> update(Todo todo) async {
-      db.update(
-        tableTodo,
-        todo.toJson(),
-        where: '$columnId = ?',
-        whereArgs: [todo.id],
-      );
-    }
-
-    Future<void> close() async => db.close();
   }
+
+  Future<void> update(Todo todo) async {
+    db.update(
+      tableTodo,
+      todo.toJson(),
+      where: '$columnId = ?',
+      whereArgs: [todo.id],
+    );
+  }
+
+  Future<void> close() async => db.close();
 }
