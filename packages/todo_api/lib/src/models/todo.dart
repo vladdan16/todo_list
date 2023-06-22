@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,7 +6,6 @@ import 'package:uuid/uuid.dart';
 typedef JsonMap = Map<String, dynamic>;
 
 @immutable
-@JsonSerializable()
 base class Todo extends Equatable {
   /// Unique task id
   final String id;
@@ -19,25 +17,22 @@ base class Todo extends Equatable {
   final Importance importance;
 
   /// Optional deadline of task
-  DateTime? deadline;
+  final DateTime? deadline;
 
   /// Marker if task is done
-  bool done;
+  final bool done;
 
   /// Hex color of task ???
-  String? color;
+  final String? color;
 
   /// Time when task was created
-  @JsonKey(name: "created_at")
-  DateTime createdAt;
+  final DateTime createdAt;
 
   /// Time when task was modified
-  @JsonKey(name: "changed_at")
-  DateTime changedAt;
+  final DateTime changedAt;
 
   /// Device id where task was modified
-  @JsonKey(name: "last_updated_by")
-  String lastUpdatedBy;
+  final String lastUpdatedBy;
 
   Todo({
     String? id,
