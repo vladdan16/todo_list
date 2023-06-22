@@ -98,8 +98,8 @@ base class Todo extends Equatable {
       'deadline': deadline?.millisecondsSinceEpoch,
       'done': done,
       'color': color,
-      'created_at': createdAt,
-      'changed_at': changedAt,
+      'created_at': createdAt.millisecondsSinceEpoch,
+      'changed_at': changedAt.millisecondsSinceEpoch,
       'last_updated_by': lastUpdatedBy,
     };
   }

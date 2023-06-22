@@ -13,14 +13,6 @@ final class TodoProvider {
     return todoProvider;
   }
 
-  Future<List<Todo>> getAll() async {
-    final List<Map<String, dynamic>> maps = await db.query(tableTodo);
-    return List.generate(
-      maps.length,
-      (i) => Todo.fromJson(maps[i]),
-    );
-  }
-
   Future<void> _open(String path) async {
     db = await openDatabase(
       path,
@@ -39,6 +31,14 @@ final class TodoProvider {
         $columnLastUpdatedBy text not null)
         ''');
       },
+    );
+  }
+
+  Future<List<Todo>> getAll() async {
+    final List<Map<String, dynamic>> maps = await db.query(tableTodo);
+    return List.generate(
+      maps.length,
+      (i) => Todo.fromJson(maps[i]),
     );
   }
 
