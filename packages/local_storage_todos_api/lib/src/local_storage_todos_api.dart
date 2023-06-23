@@ -3,6 +3,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:todo_api/todo_api.dart';
 
 const String dbPath = 'todo_database.db';
+const String tableRevision = 'revision';
+const String columnRevision = 'col_revision';
 const String tableTodo = 'todo';
 const String columnId = '_id';
 const String columnText = 'text';
@@ -16,7 +18,6 @@ const String columnLastUpdatedBy = 'last_updated_by';
 
 class LocalStorageTodosApi implements TodoApi {
   late TodoProvider todoProvider;
-  final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(const []);
 
   LocalStorageTodosApi._create();
 
@@ -27,36 +28,56 @@ class LocalStorageTodosApi implements TodoApi {
   }
 
   Future<void> _init() async {
+    todoProvider = await TodoProvider.create();
+  }
+
+  @override
+  Future<(List<Todo>, int)> getTodoList() async {
     var list = await todoProvider.getAll();
-    _todoStreamController.add(list);
+    var revision = await todoProvider.getRevision();
+    return (list, revision);
   }
 
   @override
-  Stream<List<Todo>> getTodoList() => _todoStreamController.asBroadcastStream();
-
-  @override
-  Future<void> saveTodo(Todo todo) async {
-    final todos = [..._todoStreamController.value];
-    final todoIndex = todos.indexWhere((e) => e.id == todo.id);
-    if (todoIndex >= 0) {
-      todos[todoIndex] = todo;
+  Future<(Todo, int)> getTodo(String id) async {
+    var todo = await todoProvider.getTodo(id);
+    if (todo == null) {
+      throw NotFoundException();
     } else {
-      todos.add(todo);
+      var revision = await todoProvider.getRevision();
+      return (todo, revision);
     }
-    _todoStreamController.add(todos);
-    todoProvider.update(todo);
   }
 
   @override
-  Future<void> deleteTodo(String id) async {
-    final todos = [..._todoStreamController.value];
-    final todoIndex = todos.indexWhere((e) => e.id == id);
-    if (todoIndex == -1) {
-      throw Exception('Unable to delete non-existing todo');
+  Future<int> saveTodo(Todo todo, int revision) async {
+    var check = await todoProvider.getTodo(todo.id);
+    if (check == null) {
+      todoProvider.insert(todo);
     } else {
-      todos.removeAt(todoIndex);
-      _todoStreamController.add(todos);
+      todoProvider.update(todo);
+    }
+    todoProvider.setRevision(revision);
+    return revision;
+  }
+
+  @override
+  Future<(Todo, int)> deleteTodo(String id, int revision) async {
+    var check = await todoProvider.getTodo(id);
+    if (check == null) {
+      throw NotFoundException();
+    } else {
       todoProvider.delete(id);
+      todoProvider.setRevision(revision);
+      return (check, revision);
     }
+  }
+
+  @override
+  Future<(List<Todo>, int)> patchList(List<Todo> list, int revision) async{
+    todoProvider.updateAll(list);
+    todoProvider.setRevision(revision);
+    var todos = await todoProvider.getAll();
+    return (todos, revision);
   }
 }

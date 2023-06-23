@@ -30,6 +30,10 @@ final class TodoProvider {
         $columnChangedAt text not null,
         $columnLastUpdatedBy text not null)
         ''');
+        await db.execute('''
+        create table $tableRevision (
+        $columnRevision integer primary key)
+        ''');
       },
     );
   }
@@ -40,6 +44,13 @@ final class TodoProvider {
       maps.length,
       (i) => Todo.fromJson(maps[i]),
     );
+  }
+
+  Future<void> updateAll(List<Todo> list) async {
+    db.delete(tableTodo, where: null);
+    for (var el in list) {
+      db.insert(tableTodo, el.toJson());
+    }
   }
 
   Future<void> insert(Todo todo) async {
@@ -84,6 +95,25 @@ final class TodoProvider {
       todo.toJson(),
       where: '$columnId = ?',
       whereArgs: [todo.id],
+    );
+  }
+
+  Future<int> getRevision() async {
+    List<Map<String, dynamic>> maps = await db.query(
+      tableRevision,
+      columns: [columnRevision],
+    );
+    return maps.first[columnRevision] as int;
+  }
+
+  Future<void> setRevision(int revision) async {
+    await db.delete(
+      tableRevision,
+      where: null,
+    );
+    await db.insert(
+      tableRevision,
+      {columnRevision: revision},
     );
   }
 

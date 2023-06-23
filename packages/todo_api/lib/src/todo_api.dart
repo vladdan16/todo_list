@@ -4,12 +4,18 @@ import 'package:todo_api/todo_api.dart';
 abstract interface class TodoApi {
   const TodoApi();
 
-  /// Provides [Stream] of all Todo instances
-  Stream<List<Todo>> getTodoList();
+  /// Provides [List] of all Todo instances
+  Future<(List<Todo>, int)> getTodoList();
 
-  /// Saves a [Todo] or replace todo with same id
-  Future<void> saveTodo(Todo todo);
+  /// Provides [Todo] with requested id
+  Future<(Todo, int)> getTodo(String id);
 
-  /// Deletes `todo` with given id
-  Future<void> deleteTodo(String id);
+  /// Saves a [Todo] or updates todo with same id
+  Future<int> saveTodo(Todo todo, int revision);
+
+  /// Deletes [Todo] with given id
+  Future<(Todo, int)> deleteTodo(String id, int revision);
+
+  ///Patches [List] of [Todo]
+  Future<(List<Todo>, int)> patchList(List<Todo> list, int revision);
 }

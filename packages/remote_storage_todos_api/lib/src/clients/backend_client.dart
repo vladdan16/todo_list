@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:remote_storage_todos_api/env/env.dart';
-import 'package:remote_storage_todos_api/remote_storage_todos_api.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -148,12 +147,13 @@ final class BackendClient {
     }
   }
 
-  Future<(Todo, int)> deleteTodo(Todo todo) async {
-    var url = Uri.https(baseUrl, todo.id);
+  Future<(Todo, int)> deleteTodo(String id, int revision) async {
+    var url = Uri.https(baseUrl, id);
     var response = await http.delete(
       url,
       headers: <String, String>{
         'Authorization': token,
+        'X-Last-Known-Revision': revision.toString(),
       },
     );
 
@@ -166,7 +166,7 @@ final class BackendClient {
     } else if (response.statusCode == 404) {
       throw NotFoundException();
     } else if (response.statusCode == 400) {
-      throw BadRequestException();
+      throw BadRequestException(response.body);
     } else {
       throw Exception();
     }
