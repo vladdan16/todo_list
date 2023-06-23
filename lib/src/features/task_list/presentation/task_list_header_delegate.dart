@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
+class TaskListHeaderDelegate extends SliverPersistentHeaderDelegate {
   final int completed;
   bool visibility;
   final void Function() onChangeVisibility;
 
-  HomeHeaderDelegate({
+  TaskListHeaderDelegate({
     required this.completed,
     required this.onChangeVisibility,
     required this.visibility,

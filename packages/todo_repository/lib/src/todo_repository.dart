@@ -11,8 +11,7 @@ class TodoRepository {
   TodoRepository._({
     required TodoApi todoApiLocal,
     required TodoApi todoApiRemote,
-  })
-      : _todoApiLocal = todoApiLocal,
+  })  : _todoApiLocal = todoApiLocal,
         _todoApiRemote = todoApiRemote;
 
   static Future<TodoRepository> create({
@@ -32,13 +31,13 @@ class TodoRepository {
     var (remoteList, remoteRevision) = await _todoApiRemote.getTodoList();
 
     if (localRevision < remoteRevision) {
-      (localList, localRevision) = await _todoApiLocal.patchList(
-          remoteList, remoteRevision);
+      (localList, localRevision) =
+          await _todoApiLocal.patchList(remoteList, remoteRevision);
       _revision = localRevision;
       _todoStreamController.add(localList);
     } else {
-      (remoteList, remoteRevision) = await _todoApiRemote.patchList(
-          localList, localRevision);
+      (remoteList, remoteRevision) =
+          await _todoApiRemote.patchList(localList, localRevision);
       _revision = remoteRevision;
       _todoStreamController.add(remoteList);
     }
@@ -81,7 +80,5 @@ class TodoRepository {
     }
   }
 
-  Future<void> tryFix() async {
-
-  }
+  Future<void> tryFix() async {}
 }
