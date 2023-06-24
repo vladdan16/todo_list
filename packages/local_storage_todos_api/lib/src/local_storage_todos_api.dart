@@ -73,7 +73,7 @@ class LocalStorageTodosApi implements TodoApi {
   }
 
   @override
-  Future<(List<Todo>, int)> patchList(List<Todo> list, int revision) async{
+  Future<(List<Todo>, int)> patchList(List<Todo> list, int revision) async {
     todoProvider.updateAll(list);
     todoProvider.setRevision(revision);
     var todos = await todoProvider.getAll();
