@@ -14,17 +14,16 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
 
   EditTaskBloc({
     required TodoRepository repository,
-    required Todo? initialTodo,
-  })
-      : _repository = repository,
+    required Todo? initialTask,
+  })  : _repository = repository,
         super(
-        EditTaskState(
-          initialTask: initialTodo,
-          text: initialTodo?.text ?? '',
-          importance: initialTodo?.importance ?? Importance.basic,
-          deadline: initialTodo?.deadline,
-        ),
-      ) {
+          EditTaskState(
+            initialTask: initialTask,
+            text: initialTask?.text ?? '',
+            importance: initialTask?.importance ?? Importance.basic,
+            deadline: initialTask?.deadline,
+          ),
+        ) {
     on<EditTaskTextChanged>(_onTextChanged);
     on<EditTaskImportanceChanged>(_onImportanceChanged);
     on<EditTaskDeadlineChanged>(_onDeadlineChanged);
@@ -32,31 +31,39 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
     on<EditTaskDeletionRequested>(_onDeletionRequested);
   }
 
-  void _onTextChanged(EditTaskTextChanged event,
-      Emitter<EditTaskState> emit,) {
+  void _onTextChanged(
+    EditTaskTextChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
     emit(state.copyWith(text: event.text));
   }
 
-  void _onImportanceChanged(EditTaskImportanceChanged event,
-      Emitter<EditTaskState> emit,) {
+  void _onImportanceChanged(
+    EditTaskImportanceChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
     emit(state.copyWith(importance: event.importance));
   }
 
-  void _onDeadlineChanged(EditTaskDeadlineChanged event,
-      Emitter<EditTaskState> emit,) {
+  void _onDeadlineChanged(
+    EditTaskDeadlineChanged event,
+    Emitter<EditTaskState> emit,
+  ) {
     emit(state.copyWith(deadline: event.deadline));
   }
 
-  void _onSubmitted(EditTaskSubmitted event,
-      Emitter<EditTaskState> emit,) async {
+  Future<void> _onSubmitted(
+    EditTaskSubmitted event,
+    Emitter<EditTaskState> emit,
+  ) async {
     emit(state.copyWith(status: EditTaskStatus.loading));
     var deviceId = await getId() ?? const Uuid().v4();
-    final todo =
-    (state.initialTask ??
-        Todo(
-          text: '',
-          lastUpdatedBy: deviceId,
-        )).copyWith(
+    final todo = (state.initialTask ??
+            Todo(
+              text: '',
+              lastUpdatedBy: deviceId,
+            ))
+        .copyWith(
       text: state.text,
       importance: state.importance,
       deadline: state.deadline,
@@ -64,6 +71,19 @@ class EditTaskBloc extends Bloc<EditTaskEvent, EditTaskState> {
 
     try {
       await _repository.saveTodo(todo);
+      emit(state.copyWith(status: EditTaskStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: EditTaskStatus.failure));
+    }
+  }
+
+  Future<void> _onDeletionRequested(
+    EditTaskDeletionRequested event,
+    Emitter<EditTaskState> emit,
+  ) async {
+    emit(state.copyWith(status: EditTaskStatus.loading));
+    try {
+      await _repository.deleteTodo(state.initialTask!.id);
       emit(state.copyWith(status: EditTaskStatus.success));
     } catch (e) {
       emit(state.copyWith(status: EditTaskStatus.failure));

@@ -3,7 +3,6 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list/src/features/task_list/presentation/home_page.dart';
 import 'package:todo_list/src/features/task_list/presentation/task_list_page.dart';
 import 'package:todo_repository/todo_repository.dart';
 

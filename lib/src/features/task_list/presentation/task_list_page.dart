@@ -225,9 +225,9 @@ class _TaskListContent extends StatelessWidget {
                                     context
                                         .read<TaskListBloc>()
                                         .add(TaskListTodoCompletionToggled(
-                                      todo: task,
-                                      isCompleted: value,
-                                    ));
+                                          todo: task,
+                                          isCompleted: value,
+                                        ));
                                   }
                                   // setState(() {
                                   //   service.modifyTask(task, done: value);
@@ -240,7 +240,7 @@ class _TaskListContent extends StatelessWidget {
                               onPressed: () async {
                                 final _ = await Navigator.of(context).push(
                                   MaterialPageRoute(builder: (context) {
-                                    return TaskPage(task: task);
+                                    return const EditTaskPage();
                                   }),
                                 );
                               },
