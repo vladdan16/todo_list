@@ -9,24 +9,26 @@ final class BackendClient {
   final token = Env.token;
 
   Future<(List<Todo>, int)> getAll() async {
-    var url = Uri.https(baseUrl);
+    var url = Uri.parse('$baseUrl/list');
     var response = await http.get(
       url,
       headers: <String, String>{
-        'Authorisation': token,
+        'Authorization': token,
       },
     );
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
 
     if (response.statusCode == 200) {
+      var revision = json['revision'] as int;
+      if ((json['list'] as List).isEmpty) {
+        return (<Todo>[], revision);
+      }
       var list = json['list'] as List<Map<String, dynamic>>;
       var todos = List.generate(
         list.length,
         (i) => Todo.fromJson(list[i]),
       );
-
-      var revision = json['revision'] as int;
 
       return (todos, revision);
     } else if (response.statusCode == 500) {
@@ -42,7 +44,7 @@ final class BackendClient {
       (i) => list[i].toJson(),
     );
 
-    var url = Uri.https(baseUrl);
+    var url = Uri.parse('$baseUrl/list');
     var response = await http.patch(
       url,
       headers: <String, String>{
@@ -74,7 +76,7 @@ final class BackendClient {
   }
 
   Future<(Todo, int)> getTodo(String id) async {
-    var url = Uri.https(baseUrl, id);
+    var url = Uri.parse('$baseUrl/list/$id');
     var response = await http.get(url, headers: {
       'Authorization': token,
     });
@@ -96,7 +98,7 @@ final class BackendClient {
     Map<String, dynamic> body = {
       'element': todo.toJson(),
     };
-    var url = Uri.https(baseUrl);
+    var url = Uri.parse('$baseUrl/list');
     var response = await http.post(
       url,
       headers: <String, String>{
@@ -123,7 +125,7 @@ final class BackendClient {
     Map<String, dynamic> body = {
       'element': todo.toJson(),
     };
-    var url = Uri.https(baseUrl, todo.id);
+    var url = Uri.parse('$baseUrl/list/${todo.id}');
     var response = await http.put(
       url,
       headers: <String, String>{
@@ -148,7 +150,7 @@ final class BackendClient {
   }
 
   Future<(Todo, int)> deleteTodo(String id, int revision) async {
-    var url = Uri.https(baseUrl, id);
+    var url = Uri.parse('$baseUrl/list/$id');
     var response = await http.delete(
       url,
       headers: <String, String>{

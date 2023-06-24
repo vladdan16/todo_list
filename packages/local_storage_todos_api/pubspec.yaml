@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
 #  isar: ^3.1.0+1
   meta: ^1.7.0
-  rxdart: ^0.27.5
   sqflite: ^2.2.8+4
   todo_api:
     path: ../todo_api

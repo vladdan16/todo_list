@@ -99,11 +99,15 @@ final class TodoProvider {
   }
 
   Future<int> getRevision() async {
-    List<Map<String, dynamic>> maps = await db.query(
-      tableRevision,
-      columns: [columnRevision],
-    );
-    return maps.first[columnRevision] as int;
+    try {
+      List<Map<String, dynamic>> maps = await db.query(
+        tableRevision,
+        columns: [columnRevision],
+      );
+      return maps.first[columnRevision] as int;
+    } catch (_) {
+      return -1;
+    }
   }
 
   Future<void> setRevision(int revision) async {

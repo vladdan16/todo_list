@@ -1,5 +1,4 @@
 import 'package:local_storage_todos_api/local_storage_todos_api.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:todo_api/todo_api.dart';
 
 const String dbPath = 'todo_database.db';
