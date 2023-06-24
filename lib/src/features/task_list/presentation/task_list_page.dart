@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/datetime_extension.dart';
-import 'package:todo_list/src/features/edit_task/presentation/task_page.dart';
+import 'package:todo_list/src/features/edit_task/presentation/edit_task_page.dart';
 import 'package:todo_list/src/features/task_list/bloc/task_list_bloc.dart';
 import 'package:todo_list/src/features/task_list/models/models.dart';
 import 'package:todo_repository/todo_repository.dart';
@@ -76,11 +76,7 @@ class TaskListView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final _ = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              // TODO: go to Task page
-              //return TaskPage(task: ToDo(), newTask: true);
-              throw UnimplementedError();
-            }),
+            EditTaskPage.route(),
           );
         },
         tooltip: 'Add task',
@@ -229,9 +225,6 @@ class _TaskListContent extends StatelessWidget {
                                           isCompleted: value,
                                         ));
                                   }
-                                  // setState(() {
-                                  //   service.modifyTask(task, done: value);
-                                  // });
                                 },
                               ),
                             ),
@@ -239,9 +232,7 @@ class _TaskListContent extends StatelessWidget {
                               icon: const Icon(Icons.info_outline),
                               onPressed: () async {
                                 final _ = await Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) {
-                                    return const EditTaskPage();
-                                  }),
+                                  EditTaskPage.route(initialTask: task),
                                 );
                               },
                             ),
@@ -251,11 +242,7 @@ class _TaskListContent extends StatelessWidget {
                       ListTile(
                         onTap: () async {
                           final _ = await Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              // TODO: open Task page
-                              //return TaskPage(task: ToDo(), newTask: true);
-                              throw UnimplementedError();
-                            }),
+                            EditTaskPage.route(),
                           );
                         },
                         title: Text(

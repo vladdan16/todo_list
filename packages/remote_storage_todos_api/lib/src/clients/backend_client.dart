@@ -24,7 +24,7 @@ final class BackendClient {
       if ((json['list'] as List).isEmpty) {
         return (<Todo>[], revision);
       }
-      var list = json['list'] as List<Map<String, dynamic>>;
+      var list = json['list'] as List;
       var todos = List.generate(
         list.length,
         (i) => Todo.fromJson(list[i]),
@@ -59,13 +59,15 @@ final class BackendClient {
     final json = jsonDecode(response.body) as Map<String, dynamic>;
 
     if (response.statusCode == 200) {
-      var newList = json['list'] as List<Map<String, dynamic>>;
+      var revision = json['revision'] as int;
+      if ((json['list'] as List).isEmpty) {
+        return (<Todo>[], revision);
+      }
+      var newList = json['list'] as List;
       var todos = List.generate(
         newList.length,
         (i) => Todo.fromJson(newList[i]),
       );
-
-      var revision = json['revision'] as int;
 
       return (todos, revision);
     } else if (response.statusCode == 500) {
