@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:todo_api/todo_api.dart';
 
 class TodoRepository {
@@ -6,13 +5,16 @@ class TodoRepository {
   final TodoApi _todoApiRemote;
   late int _revision;
 
-  final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(const []);
+  List<Todo> _curList;
+
+  // final _todoStreamController = BehaviorSubject<List<Todo>>.seeded(const []);
 
   TodoRepository._({
     required TodoApi todoApiLocal,
     required TodoApi todoApiRemote,
   })  : _todoApiLocal = todoApiLocal,
-        _todoApiRemote = todoApiRemote;
+        _todoApiRemote = todoApiRemote,
+        _curList = const [];
 
   static Future<TodoRepository> create({
     required TodoApi todoApiLocal,
@@ -34,23 +36,27 @@ class TodoRepository {
       (localList, localRevision) =
           await _todoApiLocal.patchList(remoteList, remoteRevision);
       _revision = localRevision;
-      _todoStreamController.add(localList);
+      // _todoStreamController.add(localList);
+      _curList = localList;
     } else {
       (remoteList, remoteRevision) =
           await _todoApiRemote.patchList(localList, localRevision);
       _revision = remoteRevision;
-      _todoStreamController.add(remoteList);
+      // _todoStreamController.add(remoteList);
+      _curList = remoteList;
     }
   }
 
-  Stream<List<Todo>> getTodos() => _todoStreamController.asBroadcastStream();
+  // Stream<List<Todo>> getTodos() => _todoStreamController.asBroadcastStream();
+  List<Todo> getTodos() => _curList;
 
   Future<void> saveTodo(Todo todo) async {
     try {
       _revision = await _todoApiRemote.saveTodo(todo, _revision);
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
 
-      final todos = [..._todoStreamController.value];
+      // final todos = [..._todoStreamController.value];
+      final todos = [..._curList];
       final todoIndex = todos.indexWhere((e) => e.id == todo.id);
       if (todoIndex >= 0) {
         todos[todoIndex] = todo;
@@ -58,7 +64,8 @@ class TodoRepository {
         todos.add(todo);
       }
 
-      _todoStreamController.add(todos);
+      // _todoStreamController.add(todos);
+      _curList = todos;
     } on NotFoundException {
       tryFix();
     }
@@ -71,10 +78,12 @@ class TodoRepository {
       (_, revision) = await _todoApiLocal.deleteTodo(id, _revision);
       _revision = revision;
 
-      final todos = [..._todoStreamController.value];
+      // final todos = [..._todoStreamController.value];
+      final todos = [..._curList];
       final todoIndex = todos.indexWhere((e) => e.id == id);
       todos.removeAt(todoIndex);
-      _todoStreamController.add(todos);
+      // _todoStreamController.add(todos);
+      _curList = todos;
     } on NotFoundException {
       await tryFix();
     }

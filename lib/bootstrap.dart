@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/app.dart';
+import 'package:todo_list/src/core/core.dart';
 import 'package:todo_repository/todo_repository.dart';
 
 import 'bloc_observer.dart';
@@ -16,6 +17,8 @@ void bootstrap({
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
+
+  await DeviceId.setId();
 
   Bloc.observer = AppBlocObserver();
 
