@@ -2,6 +2,10 @@
 
 A simple Flutter ToDo list implementation. For now, only Android version is supported.
 
+## Disclaimer
+
+Прошу отнестись к проверке моей работы с пониманием и помочь решить существующие проблемы. Спасибо!
+
 ## Description
 
 With this application you can easily create tasks, choose priority for each task, and set a deadline.
@@ -21,6 +25,7 @@ With this application you can easily create tasks, choose priority for each task
 * Adaptive light and dark themes
 * Dynamic colors (available from Android S+)
 * Adaptive language (english and russian are supported)
+* Cloud syncing of tasks
 
 ## Technologies and materials used
 
