@@ -4,7 +4,7 @@ A simple Flutter ToDo list implementation. For now, only Android version is supp
 
 ## Disclaimer
 
-Прошу отнестись к проверки моей работы с пониманием и помочь решить существующие проблемы. Спасибо!
+Прошу отнестись к проверке моей работы с пониманием и помочь решить существующие проблемы. Спасибо!
 
 ## Description
 
