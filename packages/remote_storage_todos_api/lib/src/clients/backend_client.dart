@@ -17,9 +17,8 @@ final class BackendClient {
       },
     );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var revision = json['revision'] as int;
       if ((json['list'] as List).isEmpty) {
         return (<Todo>[], revision);
@@ -49,6 +48,7 @@ final class BackendClient {
       url,
       headers: <String, String>{
         'Authorization': token,
+        'Content-Type': 'application/json',
         'X-Last-Known-Revision': revision.toString(),
       },
       body: jsonEncode(<String, dynamic>{
@@ -56,9 +56,8 @@ final class BackendClient {
       }),
     );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var revision = json['revision'] as int;
       if ((json['list'] as List).isEmpty) {
         return (<Todo>[], revision);
@@ -83,9 +82,8 @@ final class BackendClient {
       'Authorization': token,
     });
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var todo = Todo.fromJson(json['element'] as Map<String, dynamic>);
       var revision = json['revision'] as int;
       return (todo, revision);
@@ -105,14 +103,14 @@ final class BackendClient {
       url,
       headers: <String, String>{
         'Authorization': token,
+        'Content-Type': 'application/json',
         'X-Last-Known-Revision': revision.toString(),
       },
       body: jsonEncode(body),
     );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var todo = Todo.fromJson(json['element'] as Map<String, dynamic>);
       var revision = json['revision'] as int;
       return (todo, revision);
@@ -132,13 +130,13 @@ final class BackendClient {
       url,
       headers: <String, String>{
         'Authorization': token,
+        'Content-Type': 'application/json',
       },
       body: jsonEncode(body),
     );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var todo = Todo.fromJson(json['element'] as Map<String, dynamic>);
       var revision = json['revision'] as int;
       return (todo, revision);
@@ -161,9 +159,8 @@ final class BackendClient {
       },
     );
 
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
       var todo = Todo.fromJson(json['element'] as Map<String, dynamic>);
       var revision = json['revision'] as int;
       return (todo, revision);
