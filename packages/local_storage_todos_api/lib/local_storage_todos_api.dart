@@ -2,4 +2,3 @@
 library local_storage_todos_api;
 
 export 'src/local_storage_todos_api.dart';
-export 'src/provider/provider.dart';

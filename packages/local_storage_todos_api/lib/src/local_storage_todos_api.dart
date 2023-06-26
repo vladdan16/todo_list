@@ -1,82 +1,70 @@
-import 'package:local_storage_todos_api/local_storage_todos_api.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_api/todo_api.dart';
 
-const String dbPath = 'todo_database.db';
-const String tableRevision = 'revision';
-const String columnRevision = 'col_revision';
-const String tableTodo = 'todo';
-const String columnId = '_id';
-const String columnText = 'text';
-const String columnImportance = 'importance';
-const String columnDeadline = 'deadline';
-const String columnDone = 'done';
-const String columnColor = 'color';
-const String columnCreatedAt = 'created_at';
-const String columnChangedAt = 'changed_at';
-const String columnLastUpdatedBy = 'last_updated_by';
-
 class LocalStorageTodosApi implements TodoApi {
-  late TodoProvider todoProvider;
+  final SharedPreferences prefs;
 
-  LocalStorageTodosApi._create();
-
-  static Future<LocalStorageTodosApi> create() async {
-    var api = LocalStorageTodosApi._create();
-    await api._init();
-    return api;
-  }
-
-  Future<void> _init() async {
-    todoProvider = await TodoProvider.create();
-  }
+  LocalStorageTodosApi(this.prefs);
 
   @override
   Future<(List<Todo>, int)> getTodoList() async {
-    var list = await todoProvider.getAll();
-    var revision = await todoProvider.getRevision();
+    var listJson = prefs.getString('todos');
+    var list = (listJson == null ? <Todo>[] : jsonDecode(listJson))
+        .map<Todo>((todoJson) => Todo.fromJson(todoJson))
+        .toList() as List<Todo>;
+    var revision = prefs.getInt('revision') ?? 0;
     return (list, revision);
   }
 
   @override
   Future<(Todo, int)> getTodo(String id) async {
-    var todo = await todoProvider.getTodo(id);
-    if (todo == null) {
-      throw NotFoundException();
-    } else {
-      var revision = await todoProvider.getRevision();
+    try {
+      var (list, revision) = await getTodoList();
+      var todo = list.firstWhere((todo) => todo.id == id);
       return (todo, revision);
+    } on StateError {
+      throw NotFoundException();
     }
   }
 
   @override
   Future<int> saveTodo(Todo todo, int revision) async {
-    var check = await todoProvider.getTodo(todo.id);
-    if (check == null) {
-      todoProvider.insert(todo);
+    var (list, _) = await getTodoList();
+    var index = list.indexWhere((oldTodo) => oldTodo.id == todo.id);
+    if (index == -1) {
+      list.add(todo);
     } else {
-      todoProvider.update(todo);
+      list[index] = todo;
     }
-    todoProvider.setRevision(revision);
+    await _saveTodoList(list, revision);
     return revision;
   }
 
   @override
   Future<(Todo, int)> deleteTodo(String id, int revision) async {
-    var check = await todoProvider.getTodo(id);
-    if (check == null) {
+    var (list, _) = await getTodoList();
+    var index = list.indexWhere((oldTodo) => oldTodo.id == id);
+    if (index == -1) {
       throw NotFoundException();
     } else {
-      todoProvider.delete(id);
-      todoProvider.setRevision(revision);
-      return (check, revision);
+      var deletedTodo = list.removeAt(index);
+      await _saveTodoList(list, revision);
+      return (deletedTodo, revision);
     }
   }
 
   @override
   Future<(List<Todo>, int)> patchList(List<Todo> list, int revision) async {
-    todoProvider.updateAll(list);
-    todoProvider.setRevision(revision);
-    var todos = await todoProvider.getAll();
+    await _saveTodoList(list, revision);
+    List<Todo> todos;
+    (todos, revision) = await getTodoList();
     return (todos, revision);
+  }
+
+  Future<void> _saveTodoList(List<Todo> list, int revision) async {
+    await prefs.setString('todos', json.encode(list.map((todo) => todo.toJson()).toList()));
+    await prefs.setInt('revision', revision);
   }
 }
