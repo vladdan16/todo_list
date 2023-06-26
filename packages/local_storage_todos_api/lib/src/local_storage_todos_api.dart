@@ -64,7 +64,8 @@ class LocalStorageTodosApi implements TodoApi {
   }
 
   Future<void> _saveTodoList(List<Todo> list, int revision) async {
-    await prefs.setString('todos', json.encode(list.map((todo) => todo.toJson()).toList()));
+    await prefs.setString(
+        'todos', json.encode(list.map((todo) => todo.toJson()).toList()));
     await prefs.setInt('revision', revision);
   }
 }
