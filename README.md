@@ -60,17 +60,23 @@ Before start be sure that you have installed git, [Flutter](https://flutter.dev)
 git clone git@github.com:vladdan16/todo_list.git
 ```
 
-2. Go to the root directory of the project
+2. Go to the following directory
 ```console
-cd todo_list
+cd todo_list/packages/remote_storage_todos_api
 ```
 
-3. Get all dependencies
+3. Add `.env` file to this directory with the following content:
+```
+BASE_URL=<BACKEND_ADDRESS>
+TOKEN=<YOUR_TOKEN>
+```
+
+4. Go back to root directory of project and get all dependencies
 ```console
 dart pub get
 ```
 
-4. Run project
+5. Run project
 ```console
 flutter run
 ```
