@@ -49,7 +49,7 @@ With this application you can easily create tasks, choose priority for each task
 </p>
 
 ## Android release
-You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheJGOPz0Hor4dlZOTw?e=4W2HyL).
+You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheRQAJvB9CIS9rnXKQ?e=DBAdSJ).
 
 ## Project installation and run
 
