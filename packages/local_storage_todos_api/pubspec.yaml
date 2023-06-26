@@ -9,15 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#  isar: ^3.1.0+1
   meta: ^1.7.0
   shared_preferences: ^2.1.2
-  sqflite: ^2.2.8+4
   todo_api:
     path: ../todo_api
 
 dev_dependencies:
   flutter_lints: ^2.0.1
-#  flutter_test:
-#    sdk: flutter
-#  mocktail: ^0.3.0

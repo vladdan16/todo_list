@@ -1,5 +1,5 @@
 name: todo_api
-description: The interfce and models for an API providing access to todo's
+description: The interface and models for an API providing access to todos
 version: 0.1.0+1
 publish_to: none
 
@@ -15,5 +15,3 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.2.0
   flutter_lints: ^2.0.1
-  mocktail: ^0.3.0
-  test: ^1.19.2
