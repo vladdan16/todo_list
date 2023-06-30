@@ -50,7 +50,7 @@ With this application you can easily create tasks, choose priority for each task
 
 ## Android release
 
-You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheRQAJvB9CIS9rnXKQ?e=DBAdSJ).
+You can try ToLo List right now! Just install `.apk` file by [this link](https://github.com/vladdan16/todo_list/releases/download/v1.1.0/Todo_List_App_v1.1.0.apk).
 
 ## Project installation and run
 
@@ -72,12 +72,17 @@ BASE_URL=<BACKEND_ADDRESS>
 TOKEN=<YOUR_TOKEN>
 ```
 
-4. Go back to root directory of project and get all dependencies
+4. Run this command in the same directory:
+```console
+dart run build_runner build --delete-conflicting-outputs
+```
+
+5. Go back to root directory of project and get all dependencies
 ```console
 dart pub get
 ```
 
-5. Run project
+6. Run project
 ```console
 flutter run
 ```
