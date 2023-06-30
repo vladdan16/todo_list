@@ -2,6 +2,10 @@
 
 A simple Flutter ToDo list implementation. For now, only Android version is supported.
 
+## Disclaimer
+
+Прошу отнестись к проверке моей работы с пониманием и помочь решить существующие проблемы. Спасибо!
+
 ## Description
 
 With this application you can easily create tasks, choose priority for each task, and set a deadline.
@@ -21,6 +25,7 @@ With this application you can easily create tasks, choose priority for each task
 * Adaptive light and dark themes
 * Dynamic colors (available from Android S+)
 * Adaptive language (english and russian are supported)
+* Cloud syncing of tasks
 
 ## Technologies and materials used
 
@@ -44,7 +49,8 @@ With this application you can easily create tasks, choose priority for each task
 </p>
 
 ## Android release
-You can try ToLo List right now! Just install `.apk` file by [this link](https://github.com/vladdan16/todo_list/releases/download/v1.0.0/ToDo_List_App_v1.0.0.apk).
+
+You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheRQAJvB9CIS9rnXKQ?e=DBAdSJ).
 
 ## Project installation and run
 
@@ -55,17 +61,23 @@ Before start be sure that you have installed git, [Flutter](https://flutter.dev)
 git clone git@github.com:vladdan16/todo_list.git
 ```
 
-2. Go to the root directory of the project
+2. Go to the following directory
 ```console
-cd todo_list
+cd todo_list/packages/remote_storage_todos_api
 ```
 
-3. Get all dependencies
+3. Add `.env` file to this directory with the following content:
+```
+BASE_URL=<BACKEND_ADDRESS>
+TOKEN=<YOUR_TOKEN>
+```
+
+4. Go back to root directory of project and get all dependencies
 ```console
 dart pub get
 ```
 
-4. Run project
+5. Run project
 ```console
 flutter run
 ```

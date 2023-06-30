@@ -1,30 +1,41 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:todo_list/src/features/edit_task/application/task_service.dart';
+import 'package:todo_api/todo_api.dart';
+import 'package:todo_list/src/core/task_list_service.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
-import '../../../core/todo.dart';
+import '../../../core/datetime_extension.dart';
 
-class TaskPage extends StatefulWidget {
-  const TaskPage({super.key, required this.task, this.newTask = false});
+class EditTaskPage extends StatefulWidget {
+  const EditTaskPage({
+    super.key,
+    required this.task,
+    this.newTask = false,
+    required this.service,
+  });
 
-  final ToDo task;
+  final Todo task;
   final bool newTask;
+  final TaskListService service;
 
   @override
-  State<TaskPage> createState() => _TaskPageState();
+  State<EditTaskPage> createState() => _EditTaskPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
-  late TaskService service;
+class _EditTaskPageState extends State<EditTaskPage> {
+  late TaskListService service;
   late TextEditingController titleTextController;
-  var logger = Logger();
+  late Todo task;
+  late bool hasDeadline;
 
   @override
   void initState() {
-    service = TaskService(widget.task, widget.newTask);
-    titleTextController = TextEditingController(text: widget.task.name);
+    service = widget.service;
+    task = widget.task;
+    hasDeadline = task.deadline != null;
+    titleTextController = TextEditingController(text: widget.task.text);
     super.initState();
   }
 
@@ -44,17 +55,18 @@ class _TaskPageState extends State<TaskPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  bool res = service.saveTaskText(titleTextController.text);
+                  bool res = titleTextController.text == '';
                   if (res) {
-                    logger.i('User tries to save empty task!');
+                    log('User tries to save empty task!');
                     MyDialogs.showInfoDialog(
                       context: context,
                       title: 'empty_title',
                       description: 'empty_title_description',
                     );
                   } else {
-                    service.saveTask();
-                    logger.i('Task ${widget.task.name} has been saved');
+                    task = task.copyWith(text: titleTextController.text);
+                    service.saveTask(task);
+                    log('Task ${widget.task.text} has been saved');
                     Navigator.of(context).pop();
                   }
                 },
@@ -100,14 +112,14 @@ class _TaskPageState extends State<TaskPage> {
                           ).tr(),
                           // subtitle: Text(curTask.importance.name).tr(),
                           DropdownButton<Importance>(
-                            value: service.curTask.importance,
+                            value: task.importance,
                             icon: const SizedBox(),
                             underline: const SizedBox(),
                             items: <DropdownMenuItem<Importance>>[
                               DropdownMenuItem<Importance>(
-                                value: Importance.no,
+                                value: Importance.basic,
                                 child: Text(
-                                  Importance.no.name,
+                                  Importance.basic.name,
                                   style: TextStyle(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -131,13 +143,13 @@ class _TaskPageState extends State<TaskPage> {
                                 ).tr(),
                               ),
                               DropdownMenuItem<Importance>(
-                                value: Importance.high,
+                                value: Importance.important,
                                 child: Row(
                                   children: <Widget>[
                                     const Text('!! ',
                                         style: TextStyle(color: Colors.red)),
                                     Text(
-                                      Importance.high.name,
+                                      Importance.important.name,
                                       style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -150,13 +162,13 @@ class _TaskPageState extends State<TaskPage> {
                               ),
                             ],
                             onChanged: (Importance? value) {
-                              logger.i(
-                                'User chose ${value?.name} importance for task ${service.curTask.name}',
+                              log(
+                                'User chose ${value?.name} importance for task ${task.text}',
                               );
                               setState(() {
-                                service.curTask.importance =
-                                    value ?? service.curTask.importance;
-                                // logger.i(value?.name);
+                                task = task.copyWith(
+                                  importance: value ?? task.importance,
+                                );
                               });
                             },
                           ),
@@ -169,13 +181,13 @@ class _TaskPageState extends State<TaskPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('  ${'deadline'.tr()}'),
-                          if (service.curTask.deadline != null)
+                          if (task.deadline != null)
                             Align(
                               alignment: Alignment.centerLeft,
                               child: TextButton(
                                 onPressed: () {
                                   var currentDate = DateTime.now();
-                                  logger.i('Show Date Picker to user');
+                                  log('Show Date Picker to user');
                                   showDatePicker(
                                     context: context,
                                     initialDate: currentDate.add(
@@ -185,24 +197,24 @@ class _TaskPageState extends State<TaskPage> {
                                     lastDate: DateTime(2030),
                                   ).then((value) {
                                     if (value != null) {
-                                      service.curTask.deadline = value;
+                                      task = task.copyWith(deadline: value);
                                     }
                                     setState(() {});
                                   });
                                 },
                                 child: Text(
-                                  service.curTask.deadline?.date ?? '',
+                                  task.deadline?.date ?? '',
                                 ),
                               ),
                             ),
                         ],
                       ),
-                      value: service.curTask.hasDeadline,
+                      value: hasDeadline,
                       onChanged: (bool value) {
-                        service.curTask.hasDeadline = value;
+                        hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
-                          logger.i('Show Date Picker to user');
+                          log('Show Date Picker to user');
                           showDatePicker(
                             context: context,
                             initialDate: currentDate.add(
@@ -211,15 +223,15 @@ class _TaskPageState extends State<TaskPage> {
                             firstDate: currentDate,
                             lastDate: DateTime(2030),
                           ).then((value) {
-                            service.curTask.deadline = value;
+                            task = task.copyWith(deadline: value);
                             if (value == null) {
-                              service.curTask.hasDeadline = false;
+                              hasDeadline = false;
                             }
                             setState(() {});
                           });
                         } else {
-                          service.curTask.deadline = null;
-                          service.curTask.hasDeadline = false;
+                          task = task.copyWith(deadline: null);
+                          hasDeadline = false;
                         }
                         setState(() {});
                       },
@@ -229,13 +241,13 @@ class _TaskPageState extends State<TaskPage> {
                       onPressed: widget.newTask
                           ? null
                           : () {
-                              logger.i('Ask user a confirmation to delete');
+                              log('Ask user a confirmation to delete');
                               MyDialogs.showConfirmDialog(
                                 context: context,
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
-                                  service.removeTask();
+                                  service.removeTask(task);
                                   Navigator.of(context).pop();
                                   setState(() {});
                                 },

@@ -1,30 +1,32 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_list/src/features/edit_task/presentation/task_page.dart';
-import 'package:todo_list/src/features/task_list/application/home_service.dart';
+import 'package:todo_api/todo_api.dart';
+import 'package:todo_list/src/core/core.dart';
+import 'package:todo_list/src/features/edit_task/presentation/edit_task_page.dart';
+import 'package:todo_list/src/core/task_list_service.dart';
+import 'package:todo_list/src/features/task_list/models/models.dart';
+import 'package:todo_list/src/features/task_list/presentation/task_list_header_delegate.dart';
+import 'package:todo_repository/todo_repository.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
-import '../../../core/todo.dart';
-import 'home_header_delegate.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.prefs});
+class TaskListPage extends StatefulWidget {
+  const TaskListPage({super.key, required this.repository});
 
-  final SharedPreferences prefs;
+  final TodoRepository repository;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TaskListPage> createState() => _TaskListPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final logger = Logger();
-  late HomeService service;
+class _TaskListPageState extends State<TaskListPage> {
+  late TaskListService service;
 
   @override
   void initState() {
-    service = HomeService(widget.prefs);
+    service = TaskListService(widget.repository);
     super.initState();
   }
 
@@ -36,9 +38,9 @@ class _HomePageState extends State<HomePage> {
           SliverPersistentHeader(
             pinned: true,
             floating: true,
-            delegate: HomeHeaderDelegate(
+            delegate: TaskListHeaderDelegate(
                 completed: service.completed,
-                visibility: service.showCompleteTasks,
+                visibility: service.filter == TaskFilter.all,
                 onChangeVisibility: () {
                   service.changeVisibility();
                   setState(() {});
@@ -57,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        for (var task in service.tasks)
+                        for (var task in service.filteredTodos)
                           Dismissible(
                             key: UniqueKey(),
                             onDismissed: (direction) {
@@ -71,14 +73,14 @@ class _HomePageState extends State<HomePage> {
                                   description: 'confirm_delete_description',
                                   onConfirmed: () {
                                     service.removeTask(task);
-                                    logger.i(
-                                      'Task ${task.name} has been removed',
-                                    );
+                                    log('Task ${task.text} has been removed');
                                   },
                                 );
                               } else {
-                                service.modifyTask(task, done: !task.done);
-                                if (service.showCompleteTasks) {
+                                service.saveTask(task.copyWith(
+                                  done: !task.done,
+                                ));
+                                if (service.filter == TaskFilter.all) {
                                   setState(() {});
                                   return false;
                                 }
@@ -88,12 +90,13 @@ class _HomePageState extends State<HomePage> {
                             background: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xFF34C759),
-                                borderRadius: service.tasks.first == task
-                                    ? const BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        topRight: Radius.circular(15),
-                                      )
-                                    : null,
+                                borderRadius:
+                                    service.filteredTodos.first == task
+                                        ? const BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15),
+                                          )
+                                        : null,
                               ),
                               child: const Row(
                                 children: <Widget>[
@@ -108,12 +111,13 @@ class _HomePageState extends State<HomePage> {
                             secondaryBackground: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFF3B30),
-                                borderRadius: service.tasks.first == task
-                                    ? const BorderRadius.only(
-                                        topRight: Radius.circular(15),
-                                        topLeft: Radius.circular(15),
-                                      )
-                                    : null,
+                                borderRadius:
+                                    service.filteredTodos.first == task
+                                        ? const BorderRadius.only(
+                                            topRight: Radius.circular(15),
+                                            topLeft: Radius.circular(15),
+                                          )
+                                        : null,
                               ),
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -132,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                                   if (task.importance == Importance.low &&
                                       !task.done)
                                     const Icon(Icons.arrow_downward),
-                                  if (task.importance == Importance.high &&
+                                  if (task.importance == Importance.important &&
                                       !task.done)
                                     const Text(
                                       '!! ',
@@ -140,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   Expanded(
                                     child: Text(
-                                      task.name,
+                                      task.text,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -152,13 +156,13 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              subtitle: task.hasDeadline
+                              subtitle: task.deadline != null
                                   ? Text(task.deadline!.date)
                                   : null,
                               leading: Theme(
                                 data: ThemeData(
                                   unselectedWidgetColor:
-                                      task.importance == Importance.high
+                                      task.importance == Importance.important
                                           ? Colors.red
                                           : Colors.grey,
                                   primarySwatch: Colors.green,
@@ -167,7 +171,9 @@ class _HomePageState extends State<HomePage> {
                                   value: task.done,
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      service.modifyTask(task, done: value);
+                                      service.saveTask(task.copyWith(
+                                        done: value,
+                                      ));
                                     });
                                   },
                                 ),
@@ -177,8 +183,11 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () async {
                                   final _ = await Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context) {
-                                      logger.i('User opens a TaskPage');
-                                      return TaskPage(task: task);
+                                      return EditTaskPage(
+                                        task: task,
+                                        newTask: false,
+                                        service: service,
+                                      );
                                     }),
                                   );
                                   setState(() {});
@@ -186,13 +195,19 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                        if (service.tasks.isNotEmpty) const Divider(),
+                        if (service.filteredTodos.isNotEmpty) const Divider(),
                         ListTile(
                           onTap: () async {
                             final _ = await Navigator.of(context).push(
                               MaterialPageRoute(builder: (context) {
-                                logger.i('User opens a TaskPage');
-                                return TaskPage(task: ToDo(), newTask: true);
+                                return EditTaskPage(
+                                  task: Todo(
+                                    text: '',
+                                    lastUpdatedBy: DeviceId.deviceId!,
+                                  ),
+                                  newTask: true,
+                                  service: service,
+                                );
                               }),
                             );
                             setState(() {});
@@ -222,8 +237,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           final _ = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
-              logger.i('User opens a TaskPage');
-              return TaskPage(task: ToDo(), newTask: true);
+              return EditTaskPage(
+                task: Todo(
+                  text: '',
+                  lastUpdatedBy: DeviceId.deviceId!,
+                ),
+                newTask: true,
+                service: service,
+              );
             }),
           );
           setState(() {});

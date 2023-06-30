@@ -1,0 +1,15 @@
+name: todo_repository
+description: A repository that handles requests related to todos
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  rxdart: ^0.27.7
+  todo_api:
+    path: ../todo_api
+
+dev_dependencies:
+  flutter_lints: ^2.0.1

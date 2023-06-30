@@ -33,7 +33,9 @@ class CodegenLoader extends AssetLoader {
     "confirm_delete": "Подтверждение удаления",
     "confirm_delete_description": "Вы собираетесь удалить задачу. Вы уверены?",
     "completed": "Выполнено",
-    "new": "Новая задача"
+    "new": "Новая задача",
+    "basic": "Средняя",
+    "important": "Высокая"
   };
   static const Map<String, dynamic> en = {
     "todo_list": "ToDo List",
@@ -55,7 +57,9 @@ class CodegenLoader extends AssetLoader {
     "confirm_delete_description":
         "You are about to delete your task. Are you sure?",
     "completed": "Completed",
-    "new": "New task"
+    "new": "New task",
+    "basic": "Basic",
+    "important": "Important"
   };
   static const Map<String, Map<String, dynamic>> mapLocales = {
     "ru": ru,

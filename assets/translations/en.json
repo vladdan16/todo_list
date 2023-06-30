@@ -16,5 +16,7 @@
   "confirm_delete": "Confirm deletion",
   "confirm_delete_description": "You are about to delete your task. Are you sure?",
   "completed": "Completed",
-  "new": "New task"
+  "new": "New task",
+  "basic": "Basic",
+  "important": "Important"
 }
