@@ -178,7 +178,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               trailing: IconButton(
                                 icon: const Icon(Icons.info_outline),
                                 onPressed: () async {
-                                  context.go('/task/${task.id}');
+                                  final _ = await context.push('/task/${task.id}');
                                   setState(() {});
                                 },
                               ),
@@ -187,7 +187,7 @@ class _TaskListPageState extends State<TaskListPage> {
                         if (service.filteredTodos.isNotEmpty) const Divider(),
                         ListTile(
                           onTap: () async {
-                            context.go('/task/new');
+                            final _ = await context.push('/task/new');
                             setState(() {});
                           },
                           title: Text(
@@ -213,7 +213,7 @@ class _TaskListPageState extends State<TaskListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          context.go('/task/new');
+          final _ = await context.push('/task/new');
           setState(() {});
         },
         tooltip: 'Add task',

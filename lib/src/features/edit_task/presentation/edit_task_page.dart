@@ -56,7 +56,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
             pinned: true,
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
               icon: const Icon(Icons.close),
             ),
@@ -73,7 +73,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   } else {
                     task = task.copyWith(text: titleTextController.text);
                     service.saveTask(task);
-                    Navigator.of(context).pop();
+                    context.pop();
                   }
                 },
                 child: Text(
