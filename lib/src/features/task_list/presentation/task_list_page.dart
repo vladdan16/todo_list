@@ -2,20 +2,17 @@ import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
-import 'package:todo_list/src/features/edit_task/presentation/edit_task_page.dart';
-import 'package:todo_list/src/core/task_list_service.dart';
 import 'package:todo_list/src/features/task_list/models/models.dart';
 import 'package:todo_list/src/features/task_list/presentation/task_list_header_delegate.dart';
-import 'package:todo_repository/todo_repository.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
 
 class TaskListPage extends StatefulWidget {
-  const TaskListPage({super.key, required this.repository});
-
-  final TodoRepository repository;
+  const TaskListPage({super.key});
 
   @override
   State<TaskListPage> createState() => _TaskListPageState();
@@ -26,7 +23,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
   @override
   void initState() {
-    service = TaskListService(widget.repository);
+    service = GetIt.I<TaskListService>();
     super.initState();
   }
 
@@ -181,15 +178,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               trailing: IconButton(
                                 icon: const Icon(Icons.info_outline),
                                 onPressed: () async {
-                                  final _ = await Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) {
-                                      return EditTaskPage(
-                                        task: task,
-                                        newTask: false,
-                                        service: service,
-                                      );
-                                    }),
-                                  );
+                                  context.go('/task/${task.id}');
                                   setState(() {});
                                 },
                               ),
@@ -198,18 +187,7 @@ class _TaskListPageState extends State<TaskListPage> {
                         if (service.filteredTodos.isNotEmpty) const Divider(),
                         ListTile(
                           onTap: () async {
-                            final _ = await Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return EditTaskPage(
-                                  task: Todo(
-                                    text: '',
-                                    lastUpdatedBy: DeviceId.deviceId!,
-                                  ),
-                                  newTask: true,
-                                  service: service,
-                                );
-                              }),
-                            );
+                            context.go('/task/new');
                             setState(() {});
                           },
                           title: Text(
@@ -235,18 +213,7 @@ class _TaskListPageState extends State<TaskListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final _ = await Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              return EditTaskPage(
-                task: Todo(
-                  text: '',
-                  lastUpdatedBy: DeviceId.deviceId!,
-                ),
-                newTask: true,
-                service: service,
-              );
-            }),
-          );
+          context.go('/task/new');
           setState(() {});
         },
         tooltip: 'Add task',

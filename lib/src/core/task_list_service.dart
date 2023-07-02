@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/features/task_list/models/models.dart';
 import 'package:todo_repository/todo_repository.dart';
@@ -15,6 +17,10 @@ final class TaskListService {
 
   Iterable<Todo> get filteredTodos => filter.applyAll(todos);
 
+  Todo getTodo(String id) {
+    return _repository.getTodo(id);
+  }
+
   void changeVisibility() {
     filter = filter == TaskFilter.all ? TaskFilter.active : TaskFilter.all;
   }
@@ -27,6 +33,7 @@ final class TaskListService {
   void saveTask(Todo task) async {
     await _repository.saveTodo(task);
     todos = _repository.getTodos();
+    log('Task ${task.text} has been saved');
   }
 
   int get completed {

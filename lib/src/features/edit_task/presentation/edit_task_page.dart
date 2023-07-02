@@ -1,24 +1,19 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_api/todo_api.dart';
-import 'package:todo_list/src/core/task_list_service.dart';
+import 'package:todo_list/src/core/core.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
-import '../../../core/datetime_extension.dart';
 
 class EditTaskPage extends StatefulWidget {
   const EditTaskPage({
     super.key,
-    required this.task,
-    this.newTask = false,
-    required this.service,
+    required this.id,
   });
 
-  final Todo task;
-  final bool newTask;
-  final TaskListService service;
+  final String id;
 
   @override
   State<EditTaskPage> createState() => _EditTaskPageState();
@@ -28,15 +23,28 @@ class _EditTaskPageState extends State<EditTaskPage> {
   late TaskListService service;
   late TextEditingController titleTextController;
   late Todo task;
+  late bool newTask;
   late bool hasDeadline;
 
   @override
   void initState() {
-    service = widget.service;
-    task = widget.task;
+    service = GetIt.I<TaskListService>();
+    if (widget.id == 'new') {
+      newTask = true;
+      task = Todo(text: '', lastUpdatedBy: DeviceId.deviceId);
+    } else {
+      newTask = false;
+      task = service.getTodo(widget.id);
+    }
     hasDeadline = task.deadline != null;
-    titleTextController = TextEditingController(text: widget.task.text);
+    titleTextController = TextEditingController(text: task.text);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleTextController.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,7 +65,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 onPressed: () {
                   bool res = titleTextController.text == '';
                   if (res) {
-                    log('User tries to save empty task!');
                     MyDialogs.showInfoDialog(
                       context: context,
                       title: 'empty_title',
@@ -66,7 +73,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   } else {
                     task = task.copyWith(text: titleTextController.text);
                     service.saveTask(task);
-                    log('Task ${widget.task.text} has been saved');
                     Navigator.of(context).pop();
                   }
                 },
@@ -162,9 +168,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               ),
                             ],
                             onChanged: (Importance? value) {
-                              log(
-                                'User chose ${value?.name} importance for task ${task.text}',
-                              );
                               setState(() {
                                 task = task.copyWith(
                                   importance: value ?? task.importance,
@@ -187,7 +190,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               child: TextButton(
                                 onPressed: () {
                                   var currentDate = DateTime.now();
-                                  log('Show Date Picker to user');
                                   showDatePicker(
                                     context: context,
                                     initialDate: currentDate.add(
@@ -214,7 +216,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
-                          log('Show Date Picker to user');
                           showDatePicker(
                             context: context,
                             initialDate: currentDate.add(
@@ -238,23 +239,22 @@ class _EditTaskPageState extends State<EditTaskPage> {
                     ),
                     const Divider(),
                     TextButton(
-                      onPressed: widget.newTask
+                      onPressed: newTask
                           ? null
                           : () {
-                              log('Ask user a confirmation to delete');
                               MyDialogs.showConfirmDialog(
                                 context: context,
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
                                   service.removeTask(task);
-                                  Navigator.of(context).pop();
-                                  setState(() {});
+                                  context.pop();
+                                  // setState(() {});
                                 },
                               );
                             },
                       style: ButtonStyle(
-                        foregroundColor: widget.newTask
+                        foregroundColor: newTask
                             ? null
                             : MaterialStateProperty.all<Color>(Colors.red),
                       ),
