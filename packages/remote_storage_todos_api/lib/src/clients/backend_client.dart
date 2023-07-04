@@ -4,7 +4,7 @@ import 'package:remote_storage_todos_api/env/env.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:http/http.dart' as http;
 
-final class BackendClient {
+class BackendClient {
   final baseUrl = Env.baseUrl;
   final token = Env.token;
 

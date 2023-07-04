@@ -2,9 +2,9 @@ import 'package:remote_storage_todos_api/remote_storage_todos_api.dart';
 import 'package:todo_api/todo_api.dart';
 
 class RemoteStorageTodosApi implements TodoApi {
-  final _backendClient = BackendClient();
+  final BackendClient _backendClient;
 
-  RemoteStorageTodosApi();
+  RemoteStorageTodosApi(BackendClient client) : _backendClient = client;
 
   @override
   Future<(List<Todo>, int)> getTodoList() {

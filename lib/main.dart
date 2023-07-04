@@ -14,7 +14,9 @@ void main() async {
   GetIt.I.registerSingleton<SharedPreferences>(prefs);
 
   final todoApiLocal = LocalStorageTodosApi(prefs);
-  final todoApiRemote = RemoteStorageTodosApi();
+
+  var client = BackendClient();
+  final todoApiRemote = RemoteStorageTodosApi(client);
 
   bootstrap(todoApiLocal: todoApiLocal, todoApiRemote: todoApiRemote);
 }
