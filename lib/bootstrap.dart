@@ -25,8 +25,5 @@ void bootstrap({
 
   GetIt.I.registerSingleton<TaskListService>(TaskListService(todoRepository));
 
-  runZonedGuarded(
-    () => runApp(const TodoListApp()),
-    (error, stack) => log(error.toString(), stackTrace: stack),
-  );
+  runApp(const TodoListApp());
 }

@@ -7,6 +7,7 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
+  connectivity_plus: ^4.0.1
   rxdart: ^0.27.7
   todo_api:
     path: ../todo_api
