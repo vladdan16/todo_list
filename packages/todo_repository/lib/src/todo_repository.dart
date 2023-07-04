@@ -40,6 +40,7 @@ class TodoRepository {
         syncDataToServer();
       }
     });
+    log('Repository: Initialization complete');
   }
 
   List<Todo> getTodos() => _curList;
@@ -62,12 +63,13 @@ class TodoRepository {
 
       _revision = await _todoApiRemote.saveTodo(todo, _revision);
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
+
       log('Repository: task has been saved');
     } on SocketException {
-      log('Repository: Unable to save task, Socket exception');
+      log('Repository: Unable to save task, using local data, Socket exception');
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
     } on TimeoutException {
-      log('Repository: Unable to save task, Server timeout');
+      log('Repository: Unable to save task, using local data, Server timeout');
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
     }
   }
@@ -83,13 +85,14 @@ class TodoRepository {
       _revision = revision;
       (_, revision) = await _todoApiLocal.deleteTodo(id, _revision);
       _revision = revision;
+
       log('Repository: task has been deleted');
     } on SocketException {
-      log('Repository: Unable to delete task, Socket exception');
+      log('Repository: Unable to delete task, using local data, Socket exception');
       var (_, revision) = await _todoApiLocal.deleteTodo(id, _revision);
       _revision = revision;
     } on TimeoutException {
-      log('Repository: Unable to delete task, Timeout exception');
+      log('Repository: Unable to delete task, using local data, Timeout exception');
       var (_, revision) = await _todoApiLocal.deleteTodo(id, _revision);
       _revision = revision;
     }
@@ -105,6 +108,8 @@ class TodoRepository {
 
       _curList = localList;
       _revision = localRevision;
+
+      log('Repository: all data was synced to server');
     } on SocketException {
       log('Repository: Failed to sync data with server, using local data, Socket exception');
       var (localList, localRevision) = await _todoApiLocal.getTodoList();
