@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:todo_api/todo_api.dart';
 
 class TodoRepository {
@@ -63,6 +65,7 @@ class TodoRepository {
 
       _revision = await _todoApiRemote.saveTodo(todo, _revision);
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
+      log('Repository: task has been saved');
     } on NotFoundException {
       tryFix();
     }
@@ -79,6 +82,7 @@ class TodoRepository {
       _revision = revision;
       (_, revision) = await _todoApiLocal.deleteTodo(id, _revision);
       _revision = revision;
+      log('Repository: task has been deleted');
     } on NotFoundException {
       await tryFix();
     }

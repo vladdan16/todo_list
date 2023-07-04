@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:remote_storage_todos_api/env/env.dart';
 import 'package:todo_api/todo_api.dart';
@@ -121,7 +122,7 @@ final class BackendClient {
     }
   }
 
-  Future<(Todo, int)> updateTodo(Todo todo) async {
+  Future<(Todo, int)> updateTodo(Todo todo, int revision) async {
     Map<String, dynamic> body = {
       'element': todo.toJson(),
     };
@@ -131,6 +132,7 @@ final class BackendClient {
       headers: <String, String>{
         'Authorization': token,
         'Content-Type': 'application/json',
+        'X-Last-Known-Revision': revision.toString(),
       },
       body: jsonEncode(body),
     );

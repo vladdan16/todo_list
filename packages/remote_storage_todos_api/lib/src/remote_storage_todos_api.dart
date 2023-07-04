@@ -20,7 +20,7 @@ class RemoteStorageTodosApi implements TodoApi {
   Future<int> saveTodo(Todo todo, int revision) async {
     try {
       var (_, _) = await _backendClient.getTodo(todo.id);
-      var (_, newRevision) = await _backendClient.updateTodo(todo);
+      var (_, newRevision) = await _backendClient.updateTodo(todo, revision);
       return newRevision;
     } on NotFoundException catch (_, __) {
       var (_, newRevision) = await _backendClient.insert(todo, revision);
