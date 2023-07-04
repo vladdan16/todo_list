@@ -1,6 +1,7 @@
 name: todo_list
 description: A simple crossplatform ToDo list implementation
 version: 1.1.0+2
+publish_to: none
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

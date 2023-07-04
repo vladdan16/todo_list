@@ -148,6 +148,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                         decoration: task.done
                                             ? TextDecoration.lineThrough
                                             : null,
+                                        color: task.done ? Colors.grey : null,
                                       ),
                                     ),
                                   ),
@@ -178,7 +179,8 @@ class _TaskListPageState extends State<TaskListPage> {
                               trailing: IconButton(
                                 icon: const Icon(Icons.info_outline),
                                 onPressed: () async {
-                                  final _ = await context.push('/task/${task.id}');
+                                  final _ =
+                                      await context.push('/task/${task.id}');
                                   setState(() {});
                                 },
                               ),
