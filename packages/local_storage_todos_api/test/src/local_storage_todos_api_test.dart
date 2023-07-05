@@ -126,9 +126,12 @@ void main() {
     var list = [Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')];
     var revision = 1;
 
-    when(prefs.setString('todos', jsonEncode(list.map((e) => e.toJson()).toList()))).thenAnswer((_) async => true);
+    when(prefs.setString(
+            'todos', jsonEncode(list.map((e) => e.toJson()).toList())))
+        .thenAnswer((_) async => true);
     when(prefs.setInt('revision', revision)).thenAnswer((_) async => true);
-    when(prefs.getString('todos')).thenReturn(jsonEncode(list.map((e) => e.toJson()).toList()));
+    when(prefs.getString('todos'))
+        .thenReturn(jsonEncode(list.map((e) => e.toJson()).toList()));
     when(prefs.getInt('revision')).thenReturn(revision);
 
     var (newList, newRevision) = await api.patchList(list, revision);

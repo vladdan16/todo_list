@@ -41,7 +41,8 @@ void main() {
 
       provideDummy(todo);
       when(client.getTodo(id)).thenAnswer((_) async => (todo, revision));
-      when(client.updateTodo(newTodo, revision)).thenAnswer((_) async => (newTodo, revision + 1));
+      when(client.updateTodo(newTodo, revision))
+          .thenAnswer((_) async => (newTodo, revision + 1));
 
       var newRevision = await api.saveTodo(newTodo, revision);
 
