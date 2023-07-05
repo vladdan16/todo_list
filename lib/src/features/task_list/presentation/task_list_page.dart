@@ -30,188 +30,195 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            floating: true,
-            delegate: TaskListHeaderDelegate(
-                completed: service.completed,
-                visibility: service.filter == TaskFilter.all,
-                onChangeVisibility: () {
-                  service.changeVisibility();
-                  setState(() {});
-                }),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
-            sliver: SliverToBoxAdapter(
-              child: ClipRect(
-                child: Card(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        for (var task in service.filteredTodos)
-                          Dismissible(
-                            key: UniqueKey(),
-                            onDismissed: (direction) {
-                              setState(() {});
-                            },
-                            confirmDismiss: (direction) async {
-                              if (direction == DismissDirection.endToStart) {
-                                return await MyDialogs.showConfirmDialog(
-                                  context: context,
-                                  title: 'confirm_delete',
-                                  description: 'confirm_delete_description',
-                                  onConfirmed: () {
-                                    service.removeTask(task);
-                                    log('Task ${task.text} has been removed');
-                                  },
-                                );
-                              } else {
-                                service.saveTask(task.copyWith(
-                                  done: !task.done,
-                                ));
-                                if (service.filter == TaskFilter.all) {
-                                  setState(() {});
-                                  return false;
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await service.refresh();
+          setState(() {});
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              floating: true,
+              delegate: TaskListHeaderDelegate(
+                  completed: service.completed,
+                  visibility: service.filter == TaskFilter.all,
+                  onChangeVisibility: () {
+                    service.changeVisibility();
+                    setState(() {});
+                  }),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.only(right: 15, left: 15, bottom: 80),
+              sliver: SliverToBoxAdapter(
+                child: ClipRect(
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          for (var task in service.filteredTodos)
+                            Dismissible(
+                              key: UniqueKey(),
+                              onDismissed: (direction) {
+                                setState(() {});
+                              },
+                              confirmDismiss: (direction) async {
+                                if (direction == DismissDirection.endToStart) {
+                                  return await MyDialogs.showConfirmDialog(
+                                    context: context,
+                                    title: 'confirm_delete',
+                                    description: 'confirm_delete_description',
+                                    onConfirmed: () {
+                                      service.removeTask(task);
+                                      log('Task ${task.text} has been removed');
+                                    },
+                                  );
+                                } else {
+                                  service.saveTask(task.copyWith(
+                                    done: !task.done,
+                                  ));
+                                  if (service.filter == TaskFilter.all) {
+                                    setState(() {});
+                                    return false;
+                                  }
+                                  return true;
                                 }
-                                return true;
-                              }
-                            },
-                            background: Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF34C759),
-                                borderRadius:
-                                    service.filteredTodos.first == task
-                                        ? const BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                          )
-                                        : null,
-                              ),
-                              child: const Row(
-                                children: <Widget>[
-                                  SizedBox(width: 25),
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            secondaryBackground: Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFF3B30),
-                                borderRadius:
-                                    service.filteredTodos.first == task
-                                        ? const BorderRadius.only(
-                                            topRight: Radius.circular(15),
-                                            topLeft: Radius.circular(15),
-                                          )
-                                        : null,
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.delete,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 25),
-                                ],
-                              ),
-                            ),
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  if (task.importance == Importance.low &&
-                                      !task.done)
-                                    const Icon(Icons.arrow_downward),
-                                  if (task.importance == Importance.important &&
-                                      !task.done)
-                                    const Text(
-                                      '!! ',
-                                      style: TextStyle(color: Colors.red),
+                              },
+                              background: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF34C759),
+                                  borderRadius:
+                                      service.filteredTodos.first == task
+                                          ? const BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            )
+                                          : null,
+                                ),
+                                child: const Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 25),
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
                                     ),
-                                  Expanded(
-                                    child: Text(
-                                      task.text,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        decoration: task.done
-                                            ? TextDecoration.lineThrough
-                                            : null,
-                                        color: task.done ? Colors.grey : null,
+                                  ],
+                                ),
+                              ),
+                              secondaryBackground: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFF3B30),
+                                  borderRadius:
+                                      service.filteredTodos.first == task
+                                          ? const BorderRadius.only(
+                                              topRight: Radius.circular(15),
+                                              topLeft: Radius.circular(15),
+                                            )
+                                          : null,
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(width: 25),
+                                  ],
+                                ),
+                              ),
+                              child: ListTile(
+                                title: Row(
+                                  children: [
+                                    if (task.importance == Importance.low &&
+                                        !task.done)
+                                      const Icon(Icons.arrow_downward),
+                                    if (task.importance ==
+                                            Importance.important &&
+                                        !task.done)
+                                      const Text(
+                                        '!! ',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    Expanded(
+                                      child: Text(
+                                        task.text,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          decoration: task.done
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                          color: task.done ? Colors.grey : null,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              subtitle: task.deadline != null
-                                  ? Text(task.deadline!.date)
-                                  : null,
-                              leading: Theme(
-                                data: ThemeData(
-                                  unselectedWidgetColor:
-                                      task.importance == Importance.important
-                                          ? Colors.red
-                                          : Colors.grey,
-                                  primarySwatch: Colors.green,
+                                  ],
                                 ),
-                                child: Checkbox(
-                                  value: task.done,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      service.saveTask(task.copyWith(
-                                        done: value,
-                                      ));
-                                    });
+                                subtitle: task.deadline != null
+                                    ? Text(task.deadline!.date)
+                                    : null,
+                                leading: Theme(
+                                  data: ThemeData(
+                                    unselectedWidgetColor:
+                                        task.importance == Importance.important
+                                            ? Colors.red
+                                            : Colors.grey,
+                                    primarySwatch: Colors.green,
+                                  ),
+                                  child: Checkbox(
+                                    value: task.done,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        service.saveTask(task.copyWith(
+                                          done: value,
+                                        ));
+                                      });
+                                    },
+                                  ),
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.info_outline),
+                                  onPressed: () async {
+                                    final _ =
+                                        await context.push('/task/${task.id}');
+                                    setState(() {});
                                   },
                                 ),
                               ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.info_outline),
-                                onPressed: () async {
-                                  final _ =
-                                      await context.push('/task/${task.id}');
-                                  setState(() {});
-                                },
+                            ),
+                          if (service.filteredTodos.isNotEmpty) const Divider(),
+                          ListTile(
+                            onTap: () async {
+                              final _ = await context.push('/task/new');
+                              setState(() {});
+                            },
+                            title: Text(
+                              'new',
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
+                            ).tr(),
+                            leading: const SizedBox(
+                              width: 50,
                             ),
                           ),
-                        if (service.filteredTodos.isNotEmpty) const Divider(),
-                        ListTile(
-                          onTap: () async {
-                            final _ = await context.push('/task/new');
-                            setState(() {});
-                          },
-                          title: Text(
-                            'new',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                          ).tr(),
-                          leading: const SizedBox(
-                            width: 50,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

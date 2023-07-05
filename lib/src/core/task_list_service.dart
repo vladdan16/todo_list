@@ -23,17 +23,25 @@ final class TaskListService {
 
   void changeVisibility() {
     filter = filter == TaskFilter.all ? TaskFilter.active : TaskFilter.all;
+    log('Service: visibility changed');
   }
 
   void removeTask(Todo task) async {
     await _repository.deleteTodo(task.id);
     todos = _repository.getTodos();
+    log('Service: Task ${task.text} has been removed');
   }
 
   void saveTask(Todo task) async {
     await _repository.saveTodo(task);
     todos = _repository.getTodos();
-    log('Task ${task.text} has been saved');
+    log('Service: Task ${task.text} has been saved');
+  }
+
+  Future<void> refresh() async {
+    await _repository.syncDataToServer();
+    todos = _repository.getTodos();
+    log('Service: task list was refreshed');
   }
 
   int get completed {
