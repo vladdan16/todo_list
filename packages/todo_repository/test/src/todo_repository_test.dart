@@ -18,7 +18,9 @@ void main() {
   late TodoRepository repository;
   late StreamController<ConnectivityResult> controller;
 
-  var initialList = [Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')];
+  var initialList = [
+    Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')
+  ];
   var initialRevision = 1;
 
   setUp(() async {
@@ -27,10 +29,14 @@ void main() {
     connectivity = MockConnectivity();
     controller = StreamController<ConnectivityResult>();
 
-    when(localApi.getTodoList()).thenAnswer((_) async => (initialList, initialRevision));
-    when(remoteApi.patchList(initialList, initialRevision)).thenAnswer((_) async => (initialList, initialRevision));
-    when(localApi.patchList(initialList, initialRevision)).thenAnswer((_) async => (initialList, initialRevision));
-    when(connectivity.onConnectivityChanged).thenAnswer((_) => controller.stream);
+    when(localApi.getTodoList())
+        .thenAnswer((_) async => (initialList, initialRevision));
+    when(remoteApi.patchList(initialList, initialRevision))
+        .thenAnswer((_) async => (initialList, initialRevision));
+    when(localApi.patchList(initialList, initialRevision))
+        .thenAnswer((_) async => (initialList, initialRevision));
+    when(connectivity.onConnectivityChanged)
+        .thenAnswer((_) => controller.stream);
 
     repository = await TodoRepository.create(
       todoApiLocal: localApi,
@@ -55,8 +61,10 @@ void main() {
     test('saveTodo tries to save existing todo', () async {
       var modifiedTodo = initialList[0].copyWith(text: 'modified task1');
 
-      when(remoteApi.saveTodo(modifiedTodo, initialRevision)).thenAnswer((_) async => initialRevision + 1);
-      when(localApi.saveTodo(modifiedTodo, initialRevision + 1)).thenAnswer((_) async => initialRevision + 1);
+      when(remoteApi.saveTodo(modifiedTodo, initialRevision))
+          .thenAnswer((_) async => initialRevision + 1);
+      when(localApi.saveTodo(modifiedTodo, initialRevision + 1))
+          .thenAnswer((_) async => initialRevision + 1);
 
       await repository.saveTodo(modifiedTodo);
 
@@ -66,8 +74,10 @@ void main() {
     test('saveTodo tries to save new todo', () async {
       var newTodo = Todo(id: '2', text: 'task2', lastUpdatedBy: 'test_device');
 
-      when(remoteApi.saveTodo(newTodo, initialRevision)).thenAnswer((_) async => initialRevision + 1);
-      when(localApi.saveTodo(newTodo, initialRevision + 1)).thenAnswer((_) async => initialRevision + 1);
+      when(remoteApi.saveTodo(newTodo, initialRevision))
+          .thenAnswer((_) async => initialRevision + 1);
+      when(localApi.saveTodo(newTodo, initialRevision + 1))
+          .thenAnswer((_) async => initialRevision + 1);
 
       await repository.saveTodo(newTodo);
 
@@ -77,8 +87,10 @@ void main() {
 
   test('deleteTodo tries to delete existing todo', () async {
     provideDummy(initialList[0]);
-    when(remoteApi.deleteTodo('1', initialRevision)).thenAnswer((_) async => (initialList[0], initialRevision + 1));
-    when(localApi.deleteTodo('1', initialRevision + 1)).thenAnswer((_) async => (initialList[0], initialRevision + 1));
+    when(remoteApi.deleteTodo('1', initialRevision))
+        .thenAnswer((_) async => (initialList[0], initialRevision + 1));
+    when(localApi.deleteTodo('1', initialRevision + 1))
+        .thenAnswer((_) async => (initialList[0], initialRevision + 1));
 
     await repository.deleteTodo('1');
 

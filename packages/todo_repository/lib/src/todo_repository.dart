@@ -104,14 +104,20 @@ class TodoRepository {
   Future<void> syncDataToServer() async {
     try {
       var (localList, localRevision) = await _todoApiLocal.getTodoList();
-      // TODO: fix the situation when old revision sends to server
-      var (remoteList, remoteRevision) =
-          await _todoApiRemote.patchList(localList, localRevision);
-      (localList, localRevision) =
-          await _todoApiLocal.patchList(remoteList, remoteRevision);
+      var (remoteList, remoteRevision) = await _todoApiRemote.getTodoList();
 
-      _curList = localList;
-      _revision = localRevision;
+      if (remoteRevision > localRevision) {
+        _curList = remoteList;
+        _revision = remoteRevision;
+      } else {
+        (remoteList, remoteRevision) =
+            await _todoApiRemote.patchList(localList, localRevision);
+        (localList, localRevision) =
+            await _todoApiLocal.patchList(remoteList, remoteRevision);
+
+        _curList = localList;
+        _revision = localRevision;
+      }
 
       log('Repository: all data was synced to server');
     } on SocketException {
