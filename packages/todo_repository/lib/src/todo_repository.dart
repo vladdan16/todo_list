@@ -9,25 +9,28 @@ class TodoRepository {
   final TodoApi _todoApiLocal;
   final TodoApi _todoApiRemote;
   late int _revision;
-  final Connectivity connectivity;
+  final Connectivity _connectivity;
 
   List<Todo> _curList;
 
   TodoRepository._({
     required TodoApi todoApiLocal,
     required TodoApi todoApiRemote,
+    required Connectivity connectivity,
   })  : _todoApiLocal = todoApiLocal,
         _todoApiRemote = todoApiRemote,
         _curList = const [],
-        connectivity = Connectivity();
+        _connectivity = connectivity;
 
   static Future<TodoRepository> create({
     required TodoApi todoApiLocal,
     required TodoApi todoApiRemote,
+    required Connectivity connectivity,
   }) async {
     var repo = TodoRepository._(
       todoApiLocal: todoApiLocal,
       todoApiRemote: todoApiRemote,
+      connectivity: connectivity,
     );
     await repo._init();
     return repo;
@@ -35,7 +38,7 @@ class TodoRepository {
 
   Future<void> _init() async {
     await syncDataToServer();
-    connectivity.onConnectivityChanged.listen((event) {
+    _connectivity.onConnectivityChanged.listen((event) {
       if (event != ConnectivityResult.none) {
         syncDataToServer();
       }

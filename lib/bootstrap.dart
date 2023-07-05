@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:todo_api/todo_api.dart';
@@ -17,9 +18,11 @@ void bootstrap({
 
   await DeviceId.setId();
 
+  var connectivity = Connectivity();
   final todoRepository = await TodoRepository.create(
     todoApiLocal: todoApiLocal,
     todoApiRemote: todoApiRemote,
+    connectivity: connectivity,
   );
 
   GetIt.I.registerSingleton<TaskListService>(TaskListService(todoRepository));
