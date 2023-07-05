@@ -104,6 +104,7 @@ class TodoRepository {
   Future<void> syncDataToServer() async {
     try {
       var (localList, localRevision) = await _todoApiLocal.getTodoList();
+      // TODO: fix the situation when old revision sends to server
       var (remoteList, remoteRevision) =
           await _todoApiRemote.patchList(localList, localRevision);
       (localList, localRevision) =
