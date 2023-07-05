@@ -22,6 +22,8 @@ With this application you can easily create tasks, choose priority for each task
 * Dynamic colors (available from Android S+)
 * Adaptive language (english and russian are supported)
 * Cloud syncing of tasks
+* Offline work
+* Error handling
 
 ## Technologies and materials used
 
