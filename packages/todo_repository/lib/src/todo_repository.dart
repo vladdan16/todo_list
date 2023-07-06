@@ -107,17 +107,17 @@ class TodoRepository {
       var (remoteList, remoteRevision) = await _todoApiRemote.getTodoList();
 
       if (remoteRevision > localRevision) {
-        _curList = remoteList;
-        _revision = remoteRevision;
+        (localList, localRevision) =
+            await _todoApiLocal.patchList(remoteList, remoteRevision);
       } else {
         (remoteList, remoteRevision) =
             await _todoApiRemote.patchList(localList, localRevision);
         (localList, localRevision) =
             await _todoApiLocal.patchList(remoteList, remoteRevision);
-
-        _curList = localList;
-        _revision = localRevision;
       }
+
+      _curList = localList;
+      _revision = localRevision;
 
       log('Repository: all data was synced to server');
     } on SocketException {
