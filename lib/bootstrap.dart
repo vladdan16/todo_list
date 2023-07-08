@@ -25,7 +25,7 @@ void bootstrap({
     connectivity: connectivity,
   );
 
-  GetIt.I.registerSingleton<TaskListService>(TaskListService(todoRepository));
+  GetIt.I.registerSingleton<TodoRepository>(todoRepository);
 
   runApp(const TodoListApp());
 }

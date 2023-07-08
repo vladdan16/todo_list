@@ -1,13 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
+import 'package:todo_list/src/models/task_list.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
 
-class EditTaskPage extends StatefulWidget {
+class EditTaskPage extends StatelessWidget {
   const EditTaskPage({
     super.key,
     required this.id,
@@ -16,39 +17,21 @@ class EditTaskPage extends StatefulWidget {
   final String id;
 
   @override
-  State<EditTaskPage> createState() => _EditTaskPageState();
-}
+  Widget build(BuildContext context) {
+    bool newTask;
+    Todo task;
 
-class _EditTaskPageState extends State<EditTaskPage> {
-  late TaskListService service;
-  late TextEditingController titleTextController;
-  late Todo task;
-  late bool newTask;
-  late bool hasDeadline;
-
-  @override
-  void initState() {
-    service = GetIt.I<TaskListService>();
-    if (widget.id == 'new') {
+    if (id == 'new') {
       newTask = true;
       task = Todo(text: '', lastUpdatedBy: DeviceId.deviceId);
     } else {
       newTask = false;
-      task = service.getTodo(widget.id);
+      task = context.read<TaskListModel>().getTodo(id);
     }
-    hasDeadline = task.deadline != null;
-    titleTextController = TextEditingController(text: task.text);
-    super.initState();
-  }
 
-  @override
-  void dispose() {
-    titleTextController.dispose();
-    super.dispose();
-  }
+    var hasDeadline = task.deadline != null;
+    final controller = TextEditingController(text: task.text);
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -63,7 +46,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  bool res = titleTextController.text == '';
+                  bool res = controller.text == '';
                   if (res) {
                     MyDialogs.showInfoDialog(
                       context: context,
@@ -71,8 +54,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       description: 'empty_title_description',
                     );
                   } else {
-                    task = task.copyWith(text: titleTextController.text);
-                    service.saveTask(task);
+                    task = task.copyWith(text: controller.text);
+                    context.read<TaskListModel>().saveTask(task);
                     context.pop();
                   }
                 },
@@ -96,7 +79,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: TextField(
-                          controller: titleTextController,
+                          controller: controller,
                           decoration: InputDecoration(
                             hintText: 'task_description'.tr(),
                             border: InputBorder.none,
@@ -168,11 +151,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               ),
                             ],
                             onChanged: (Importance? value) {
-                              setState(() {
-                                task = task.copyWith(
-                                  importance: value ?? task.importance,
-                                );
-                              });
+                              task = task.copyWith(
+                                importance: value ?? task.importance,
+                              );
                             },
                           ),
                         ],
@@ -201,7 +182,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                     if (value != null) {
                                       task = task.copyWith(deadline: value);
                                     }
-                                    setState(() {});
                                   });
                                 },
                                 child: Text(
@@ -228,13 +208,11 @@ class _EditTaskPageState extends State<EditTaskPage> {
                             if (value == null) {
                               hasDeadline = false;
                             }
-                            setState(() {});
                           });
                         } else {
                           task = task.copyWith(deadline: null);
                           hasDeadline = false;
                         }
-                        setState(() {});
                       },
                     ),
                     const Divider(),
@@ -247,9 +225,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
-                                  service.removeTask(task);
+                                  context
+                                      .read<TaskListModel>()
+                                      .removeTask(task);
                                   context.pop();
-                                  // setState(() {});
                                 },
                               );
                             },

@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 /// The type definition for a JSON-serializable [Map].
 typedef JsonMap = Map<String, dynamic>;
 
 @immutable
+@freezed
 base class Todo extends Equatable {
   /// Unique task id
   final String id;
