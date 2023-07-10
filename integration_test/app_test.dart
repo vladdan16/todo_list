@@ -21,7 +21,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final Finder textField = find.byType(TextField);
-    await tester.enterText(textField, 'New Task');
+    await tester.enterText(textField, 'New Test Task');
 
     final Finder saveButton = find.widgetWithText(TextButton, 'SAVE');
     await tester.tap(saveButton);
