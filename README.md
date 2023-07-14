@@ -22,12 +22,14 @@ With this application you can easily create tasks, choose priority for each task
 * Dynamic colors (available from Android S+)
 * Adaptive language (english and russian are supported)
 * Cloud syncing of tasks
+* Offline work
+* Error handling
 
 ## Technologies and materials used
 
 * [Dart programming language](https://dart.dev)
 * [Flutter framework](https://flutter.dev)
-* Different flutter libraries. List available at [pubspec.yaml](https://github.com/vladdan16/todo_list/blob/master/pubspec.yaml) file
+* Several flutter libraries. List available at [pubspec.yaml](https://github.com/vladdan16/todo_list/blob/master/pubspec.yaml) file
 
 ## Demonstration
 
@@ -46,7 +48,7 @@ With this application you can easily create tasks, choose priority for each task
 
 ## Android release
 
-You can try ToLo List right now! Just install `.apk` file by [this link](https://github.com/vladdan16/todo_list/releases/download/v1.1.0/Todo_List_App_v1.1.0.apk).
+You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPeheVbVVoaRCGhWBlifA?e=o4dRV8).
 
 ## Project installation and run
 

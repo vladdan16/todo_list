@@ -1,46 +1,37 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
-import 'package:todo_list/src/core/task_list_service.dart';
+import 'package:todo_list/src/core/core.dart';
+import 'package:todo_list/src/models/task_list.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
-import '../../../core/datetime_extension.dart';
 
-class EditTaskPage extends StatefulWidget {
+class EditTaskPage extends StatelessWidget {
   const EditTaskPage({
     super.key,
-    required this.task,
-    this.newTask = false,
-    required this.service,
+    required this.id,
   });
 
-  final Todo task;
-  final bool newTask;
-  final TaskListService service;
-
-  @override
-  State<EditTaskPage> createState() => _EditTaskPageState();
-}
-
-class _EditTaskPageState extends State<EditTaskPage> {
-  late TaskListService service;
-  late TextEditingController titleTextController;
-  late Todo task;
-  late bool hasDeadline;
-
-  @override
-  void initState() {
-    service = widget.service;
-    task = widget.task;
-    hasDeadline = task.deadline != null;
-    titleTextController = TextEditingController(text: widget.task.text);
-    super.initState();
-  }
+  final String id;
 
   @override
   Widget build(BuildContext context) {
+    bool newTask;
+    Todo task;
+
+    if (id == 'new') {
+      newTask = true;
+      task = Todo(text: '', lastUpdatedBy: DeviceId.deviceId);
+    } else {
+      newTask = false;
+      task = context.read<TaskListModel>().getTodo(id);
+    }
+
+    var hasDeadline = task.deadline != null;
+    final controller = TextEditingController(text: task.text);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -48,26 +39,24 @@ class _EditTaskPageState extends State<EditTaskPage> {
             pinned: true,
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.pop();
               },
               icon: const Icon(Icons.close),
             ),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  bool res = titleTextController.text == '';
+                  bool res = controller.text == '';
                   if (res) {
-                    log('User tries to save empty task!');
                     MyDialogs.showInfoDialog(
                       context: context,
                       title: 'empty_title',
                       description: 'empty_title_description',
                     );
                   } else {
-                    task = task.copyWith(text: titleTextController.text);
-                    service.saveTask(task);
-                    log('Task ${widget.task.text} has been saved');
-                    Navigator.of(context).pop();
+                    task = task.copyWith(text: controller.text);
+                    context.read<TaskListModel>().saveTask(task);
+                    context.pop();
                   }
                 },
                 child: Text(
@@ -90,7 +79,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: TextField(
-                          controller: titleTextController,
+                          controller: controller,
                           decoration: InputDecoration(
                             hintText: 'task_description'.tr(),
                             border: InputBorder.none,
@@ -162,14 +151,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               ),
                             ],
                             onChanged: (Importance? value) {
-                              log(
-                                'User chose ${value?.name} importance for task ${task.text}',
+                              task = task.copyWith(
+                                importance: value ?? task.importance,
                               );
-                              setState(() {
-                                task = task.copyWith(
-                                  importance: value ?? task.importance,
-                                );
-                              });
                             },
                           ),
                         ],
@@ -187,7 +171,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                               child: TextButton(
                                 onPressed: () {
                                   var currentDate = DateTime.now();
-                                  log('Show Date Picker to user');
                                   showDatePicker(
                                     context: context,
                                     initialDate: currentDate.add(
@@ -199,7 +182,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                                     if (value != null) {
                                       task = task.copyWith(deadline: value);
                                     }
-                                    setState(() {});
                                   });
                                 },
                                 child: Text(
@@ -214,7 +196,6 @@ class _EditTaskPageState extends State<EditTaskPage> {
                         hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
-                          log('Show Date Picker to user');
                           showDatePicker(
                             context: context,
                             initialDate: currentDate.add(
@@ -227,34 +208,32 @@ class _EditTaskPageState extends State<EditTaskPage> {
                             if (value == null) {
                               hasDeadline = false;
                             }
-                            setState(() {});
                           });
                         } else {
                           task = task.copyWith(deadline: null);
                           hasDeadline = false;
                         }
-                        setState(() {});
                       },
                     ),
                     const Divider(),
                     TextButton(
-                      onPressed: widget.newTask
+                      onPressed: newTask
                           ? null
                           : () {
-                              log('Ask user a confirmation to delete');
                               MyDialogs.showConfirmDialog(
                                 context: context,
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
-                                  service.removeTask(task);
-                                  Navigator.of(context).pop();
-                                  setState(() {});
+                                  context
+                                      .read<TaskListModel>()
+                                      .removeTask(task);
+                                  context.pop();
                                 },
                               );
                             },
                       style: ButtonStyle(
-                        foregroundColor: widget.newTask
+                        foregroundColor: newTask
                             ? null
                             : MaterialStateProperty.all<Color>(Colors.red),
                       ),

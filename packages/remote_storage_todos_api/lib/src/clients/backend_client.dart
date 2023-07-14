@@ -4,7 +4,7 @@ import 'package:remote_storage_todos_api/env/env.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:http/http.dart' as http;
 
-final class BackendClient {
+class BackendClient {
   final baseUrl = Env.baseUrl;
   final token = Env.token;
 
@@ -121,7 +121,7 @@ final class BackendClient {
     }
   }
 
-  Future<(Todo, int)> updateTodo(Todo todo) async {
+  Future<(Todo, int)> updateTodo(Todo todo, int revision) async {
     Map<String, dynamic> body = {
       'element': todo.toJson(),
     };
@@ -131,6 +131,7 @@ final class BackendClient {
       headers: <String, String>{
         'Authorization': token,
         'Content-Type': 'application/json',
+        'X-Last-Known-Revision': revision.toString(),
       },
       body: jsonEncode(body),
     );
