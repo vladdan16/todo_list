@@ -27,14 +27,14 @@ jobs:
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 -b beta
           echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
-      
-      - name: Install Very Good CLI
-        run: dart pub global activate very_good_cli
 
       - name: Install dependencies
         run: |
-            very_good packages get --recursive
-            dart pub get
+            cd packages/todo_api && dart pub get
+            cd ../remote_storage_todos_api && dart pub get
+            cd ../local_storage_todos_api && dart pub get
+            cd ../todo_repository && dart pub get
+            cd ../.. && dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
