@@ -30,7 +30,7 @@ class TaskListModel extends ChangeNotifier {
     return res;
   }
 
-  Todo getTodo(String id) {
+  Todo? getTodo(String id) {
     return _repository.getTodo(id);
   }
 

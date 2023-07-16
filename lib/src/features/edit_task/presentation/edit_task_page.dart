@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
+import 'package:todo_list/src/models/edit_task.dart';
 import 'package:todo_list/src/models/task_list.dart';
 
 import '../../../common_widgets/my_dialogs.dart';
@@ -11,26 +12,17 @@ import '../../../common_widgets/my_dialogs.dart';
 class EditTaskPage extends StatelessWidget {
   const EditTaskPage({
     super.key,
-    required this.id,
+    // required this.id,
   });
 
-  final String id;
+  // final String id;
 
   @override
   Widget build(BuildContext context) {
-    bool newTask;
-    Todo task;
-
-    if (id == 'new') {
-      newTask = true;
-      task = Todo(text: '', lastUpdatedBy: DeviceId.deviceId);
-    } else {
-      newTask = false;
-      task = context.read<TaskListModel>().getTodo(id);
-    }
-
-    var hasDeadline = task.deadline != null;
-    final controller = TextEditingController(text: task.text);
+    bool newTask = context.read<EditTaskModel>().newTask;
+    final controller = TextEditingController(
+      text: context.read<EditTaskModel>().text,
+    );
 
     return Scaffold(
       body: CustomScrollView(
@@ -46,18 +38,18 @@ class EditTaskPage extends StatelessWidget {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  bool res = controller.text == '';
-                  if (res) {
-                    MyDialogs.showInfoDialog(
-                      context: context,
-                      title: 'empty_title',
-                      description: 'empty_title_description',
-                    );
-                  } else {
-                    task = task.copyWith(text: controller.text);
-                    context.read<TaskListModel>().saveTask(task);
-                    context.pop();
-                  }
+                  context.read<EditTaskModel>().saveTask(
+                        text: controller.text,
+                        onSaved: (task) {
+                          context.read<TaskListModel>().saveTask(task);
+                          context.pop();
+                        },
+                        onTextEmpty: () => MyDialogs.showInfoDialog(
+                          context: context,
+                          title: 'empty_title',
+                          description: 'empty_title_description',
+                        ),
+                      );
                 },
                 child: Text(
                   'save'.tr().toUpperCase(),
@@ -101,7 +93,7 @@ class EditTaskPage extends StatelessWidget {
                           ).tr(),
                           // subtitle: Text(curTask.importance.name).tr(),
                           DropdownButton<Importance>(
-                            value: task.importance,
+                            value: context.watch<EditTaskModel>().importance,
                             icon: const SizedBox(),
                             underline: const SizedBox(),
                             items: <DropdownMenuItem<Importance>>[
@@ -151,9 +143,10 @@ class EditTaskPage extends StatelessWidget {
                               ),
                             ],
                             onChanged: (Importance? value) {
-                              task = task.copyWith(
-                                importance: value ?? task.importance,
-                              );
+                              if (value != null) {
+                                context.read<EditTaskModel>().importance =
+                                    value;
+                              }
                             },
                           ),
                         ],
@@ -165,7 +158,7 @@ class EditTaskPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('  ${'deadline'.tr()}'),
-                          if (task.deadline != null)
+                          if (context.watch<EditTaskModel>().deadline != null)
                             Align(
                               alignment: Alignment.centerLeft,
                               child: TextButton(
@@ -180,20 +173,25 @@ class EditTaskPage extends StatelessWidget {
                                     lastDate: DateTime(2030),
                                   ).then((value) {
                                     if (value != null) {
-                                      task = task.copyWith(deadline: value);
+                                      context.read<EditTaskModel>().deadline =
+                                          value;
                                     }
                                   });
                                 },
                                 child: Text(
-                                  task.deadline?.date ?? '',
+                                  context
+                                          .watch<EditTaskModel>()
+                                          .deadline
+                                          ?.date ??
+                                      '',
                                 ),
                               ),
                             ),
                         ],
                       ),
-                      value: hasDeadline,
+                      value: context.watch<EditTaskModel>().hasDeadline,
                       onChanged: (bool value) {
-                        hasDeadline = value;
+                        context.read<EditTaskModel>().hasDeadline = value;
                         var currentDate = DateTime.now();
                         if (value) {
                           showDatePicker(
@@ -204,14 +202,10 @@ class EditTaskPage extends StatelessWidget {
                             firstDate: currentDate,
                             lastDate: DateTime(2030),
                           ).then((value) {
-                            task = task.copyWith(deadline: value);
-                            if (value == null) {
-                              hasDeadline = false;
-                            }
+                            context.read<EditTaskModel>().deadline = value;
                           });
                         } else {
-                          task = task.copyWith(deadline: null);
-                          hasDeadline = false;
+                          context.read<EditTaskModel>().deadline = null;
                         }
                       },
                     ),
@@ -225,9 +219,9 @@ class EditTaskPage extends StatelessWidget {
                                 title: 'confirm_delete',
                                 description: 'confirm_delete_description',
                                 onConfirmed: () {
-                                  context
-                                      .read<TaskListModel>()
-                                      .removeTask(task);
+                                  context.read<TaskListModel>().removeTask(
+                                        context.read<EditTaskModel>().task,
+                                      );
                                   context.pop();
                                 },
                               );

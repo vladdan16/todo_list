@@ -48,8 +48,12 @@ class TodoRepository {
 
   List<Todo> getTodos() => _curList;
 
-  Todo getTodo(String id) {
-    return _curList.firstWhere((element) => element.id == id);
+  Todo? getTodo(String id) {
+    try {
+      return _curList.firstWhere((element) => element.id == id);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> saveTodo(Todo todo) async {
