@@ -1,0 +1,93 @@
+name: Dart
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Setup dart
+        uses: dart-lang/setup-dart@v1
+      
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'beta'
+        
+      - run: flutter --version
+
+      - name: Install dependencies
+        run: |
+            cd packages/todo_api && dart pub get
+            cd ../remote_storage_todos_api && dart pub get
+            cd ../local_storage_todos_api && dart pub get
+            cd ../todo_repository && dart pub get
+            cd ../.. && dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+      
+      - name: Create .env file and run build_runner
+        run: |
+          echo "BASE_URL=${{ secrets.BASE_URL }}" > packages/remote_storage_todos_api/.env
+          echo "TOKEN=${{ secrets.TOKEN }}" >> packages/remote_storage_todos_api/.env
+          cd packages/remote_storage_todos_api
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      - name: Analyze project source
+        run: dart analyze --fatal-infos
+
+      - name: Run tests
+        run: |
+            cd packages/remote_storage_todos_api && dart test
+            cd ../local_storage_todos_api && flutter test
+            cd ../todo_repository && flutter test
+            cd ../..
+      
+      - name: Build Apk
+        run: flutter build apk --flavor production --target lib/main_production.dart
+      
+      - name: Get version
+        if: github.event_name != 'pull_request'
+        id: get_version
+        run: |
+          echo "VERSION=v$(grep 'version: ' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)" >> $GITHUB_ENV
+      
+      - name: Create Release
+        if: github.event_name != 'pull_request'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+      
+      - name: Upload Release Asset
+        if: github.event_name != 'pull_request'
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/app/outputs/flutter-apk/app-production-release.apk
+          asset_name: Todo_List_App_${{ env.VERSION }}.apk
+          asset_content_type: application/vnd.android.package-archive
