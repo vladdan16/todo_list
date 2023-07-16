@@ -157,7 +157,7 @@ class _TaskElement extends StatelessWidget {
       ),
       secondaryBackground: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFFF3B30),
+          color: const Color(0xFFFF453A),
           borderRadius: isFirst
               ? const BorderRadius.only(
                   topRight: Radius.circular(15),
