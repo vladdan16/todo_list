@@ -24,9 +24,11 @@ jobs:
         uses: dart-lang/setup-dart@v1
       
       - name: Install Flutter
-        run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 -b beta
-          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'beta'
+        
+      - run: flutter --version
 
       - name: Install dependencies
         run: |
