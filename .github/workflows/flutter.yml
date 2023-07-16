@@ -48,6 +48,14 @@ jobs:
           cd packages/remote_storage_todos_api
           dart run build_runner build --delete-conflicting-outputs
           cd ../..
+      
+      - name: Create firebase_options.dart
+        run: |
+          echo "${{ secrets.FIREBASE_OPTIONS }}" | base64 --decode > lib/firebase_options.dart
+      
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > android/app/google-services.json
 
       - name: Analyze project source
         run: dart analyze --fatal-infos
