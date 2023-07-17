@@ -24,6 +24,10 @@ With this application you can easily create tasks, choose priority for each task
 * Cloud syncing of tasks
 * Offline work
 * Error handling
+* Landscape orientation
+* Tablet support
+* Firebase Crashlytics
+* Firebase Analytics
 
 ## Technologies and materials used
 
