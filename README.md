@@ -53,6 +53,7 @@ With this application you can easily create tasks, choose priority for each task
 ## Android release
 
 You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPehpUJlz_oKrzGT_CFMw?e=emoKIj).
+Or you can join tester program and leave your feedback at Firebase Distribution using the following [invitation link](https://appdistribution.firebase.dev/i/1a14cb707bab009a).
 
 ## Project installation and run
 
