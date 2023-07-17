@@ -18,22 +18,32 @@ _$_Todo _$$_TodoFromJson(Map<String, dynamic> json) => _$_Todo(
           : DateTime.parse(json['deadline'] as String),
       done: json['done'] as bool? ?? false,
       color: json['color'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      changedAt: DateTime.parse(json['changedAt'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String),
+      changedAt: DateTime.parse(json['changed_at'] as String),
       lastUpdatedBy: json['lastUpdatedBy'] as String,
     );
 
-Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) => <String, dynamic>{
-      'id': instance.id,
-      'text': instance.text,
-      'importance': _$ImportanceEnumMap[instance.importance]!,
-      'deadline': instance.deadline?.toIso8601String(),
-      'done': instance.done,
-      'color': instance.color,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'changedAt': instance.changedAt.toIso8601String(),
-      'lastUpdatedBy': instance.lastUpdatedBy,
-    };
+Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'text': instance.text,
+    'importance': _$ImportanceEnumMap[instance.importance]!,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('deadline', instance.deadline?.toIso8601String());
+  val['done'] = instance.done;
+  writeNotNull('color', instance.color);
+  val['created_at'] = instance.createdAt.toIso8601String();
+  val['changed_at'] = instance.changedAt.toIso8601String();
+  val['lastUpdatedBy'] = instance.lastUpdatedBy;
+  return val;
+}
 
 const _$ImportanceEnumMap = {
   Importance.low: 'low',

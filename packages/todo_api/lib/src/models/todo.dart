@@ -1,3 +1,5 @@
+// Ignore this since I don't see any other options to set json key for field
+// ignore_for_file: invalid_annotation_target
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'todo.freezed.dart';
@@ -11,11 +13,11 @@ class Todo with _$Todo {
     required String id,
     required String text,
     @Default(Importance.basic) Importance importance,
-    DateTime? deadline,
+    @JsonKey(includeIfNull: false) DateTime? deadline,
     @Default(false) bool done,
-    String? color,
-    required DateTime createdAt,
-    required DateTime changedAt,
+    @JsonKey(includeIfNull: false) String? color,
+    @JsonKey(name: 'created_at') required DateTime createdAt,
+    @JsonKey(name: 'changed_at') required DateTime changedAt,
     required String lastUpdatedBy,
   }) = _Todo;
 
