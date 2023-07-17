@@ -19,7 +19,13 @@ void main() {
   late StreamController<ConnectivityResult> controller;
 
   var initialList = [
-    Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')
+    Todo(
+      id: '1',
+      text: 'task1',
+      lastUpdatedBy: 'test_device',
+      createdAt: DateTime.now(),
+      changedAt: DateTime.now(),
+    )
   ];
   var initialRevision = 1;
 
@@ -72,7 +78,13 @@ void main() {
     });
 
     test('saveTodo tries to save new todo', () async {
-      var newTodo = Todo(id: '2', text: 'task2', lastUpdatedBy: 'test_device');
+      var newTodo = Todo(
+        id: '2',
+        text: 'task2',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now(),
+        changedAt: DateTime.now(),
+      );
 
       when(remoteApi.saveTodo(newTodo, initialRevision))
           .thenAnswer((_) async => initialRevision + 1);

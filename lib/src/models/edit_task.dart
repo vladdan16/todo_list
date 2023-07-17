@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
+import 'package:uuid/uuid.dart';
 
 class EditTaskModel extends ChangeNotifier {
   final Todo _task;
@@ -11,8 +12,11 @@ class EditTaskModel extends ChangeNotifier {
   late bool _hasDeadline;
 
   Todo get task => _task;
+
   DateTime? get deadline => _deadline;
+
   Importance get importance => _importance;
+
   bool get hasDeadline => _hasDeadline;
 
   set deadline(DateTime? date) {
@@ -32,7 +36,14 @@ class EditTaskModel extends ChangeNotifier {
   }
 
   EditTaskModel(Todo? task)
-      : _task = task ?? Todo(text: '', lastUpdatedBy: DeviceId.deviceId),
+      : _task = task ??
+            Todo(
+              text: '',
+              lastUpdatedBy: DeviceId.deviceId,
+              createdAt: DateTime.now(),
+              changedAt: DateTime.now(),
+              id: const Uuid().v4(),
+            ),
         newTask = task == null {
     text = _task.text;
     importance = _task.importance;

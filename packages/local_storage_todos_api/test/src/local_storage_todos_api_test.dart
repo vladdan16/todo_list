@@ -71,7 +71,13 @@ void main() {
 
   group('saveTodo group', () {
     test('saveTodo tries to save new task', () async {
-      var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now(),
+        changedAt: DateTime.now(),
+      );
       var revision = 1;
 
       when(prefs.getString('todos')).thenReturn('[]');
@@ -86,13 +92,22 @@ void main() {
     });
 
     test('saveTodo tries to save existing task', () async {
-      var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now(),
+        changedAt: DateTime.now(),
+      );
       var revision = 1;
       var newTodo = Todo(
-          id: '1',
-          text: 'new task description for task1',
-          lastUpdatedBy: 'test_device',
-          done: true);
+        id: '1',
+        text: 'new task description for task1',
+        lastUpdatedBy: 'test_device',
+        done: true,
+        createdAt: DateTime.now(),
+        changedAt: DateTime.now(),
+      );
 
       when(prefs.getString('todos'))
           .thenReturn('[${jsonEncode(todo.toJson())}]');
@@ -108,7 +123,13 @@ void main() {
   });
 
   test('deleteTodo tries to delete existing task', () async {
-    var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+    var todo = Todo(
+      id: '1',
+      text: 'task1',
+      lastUpdatedBy: 'test_device',
+      createdAt: DateTime.now(),
+      changedAt: DateTime.now(),
+    );
     var revision = 1;
 
     when(prefs.getString('todos')).thenReturn('[${jsonEncode(todo.toJson())}]');
@@ -123,7 +144,15 @@ void main() {
   });
 
   test('pathList test', () async {
-    var list = [Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')];
+    var list = [
+      Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now(),
+        changedAt: DateTime.now(),
+      )
+    ];
     var revision = 1;
 
     when(prefs.setString(
