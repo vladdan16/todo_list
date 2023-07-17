@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
@@ -114,6 +116,11 @@ class _TaskElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var colorHex =
+        GetIt.I<FirebaseRemoteConfig>().getString('importance_color');
+    final color =
+        Color(int.parse(colorHex.substring(1, 7), radix: 16) + 0xFF000000);
+
     return Dismissible(
       key: UniqueKey(),
       confirmDismiss: (direction) async {
@@ -157,7 +164,7 @@ class _TaskElement extends StatelessWidget {
       ),
       secondaryBackground: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFFF453A),
+          color: color,
           borderRadius: isFirst
               ? const BorderRadius.only(
                   topRight: Radius.circular(15),
@@ -182,9 +189,9 @@ class _TaskElement extends StatelessWidget {
             if (task.importance == Importance.low && !task.done)
               const Icon(Icons.arrow_downward),
             if (task.importance == Importance.important && !task.done)
-              const Text(
+              Text(
                 '!! ',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: color),
               ),
             Expanded(
               child: Text(
@@ -199,12 +206,11 @@ class _TaskElement extends StatelessWidget {
             ),
           ],
         ),
-        subtitle: task.deadline != null ? Text(task.deadline!.date) : null,
+        subtitle: task.deadline != null ? Text(task.getDeadline()!.date) : null,
         leading: Theme(
           data: ThemeData(
-            unselectedWidgetColor: task.importance == Importance.important
-                ? Colors.red
-                : Colors.grey,
+            unselectedWidgetColor:
+                task.importance == Importance.important ? color : Colors.grey,
             primarySwatch: Colors.green,
           ),
           child: Checkbox(

@@ -13,14 +13,12 @@ _$_Todo _$$_TodoFromJson(Map<String, dynamic> json) => _$_Todo(
       importance:
           $enumDecodeNullable(_$ImportanceEnumMap, json['importance']) ??
               Importance.basic,
-      deadline: json['deadline'] == null
-          ? null
-          : DateTime.parse(json['deadline'] as String),
+      deadline: json['deadline'] as int?,
       done: json['done'] as bool? ?? false,
       color: json['color'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      changedAt: DateTime.parse(json['changed_at'] as String),
-      lastUpdatedBy: json['lastUpdatedBy'] as String,
+      createdAt: json['created_at'] as int,
+      changedAt: json['changed_at'] as int,
+      lastUpdatedBy: json['last_updated_by'] as String,
     );
 
 Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) {
@@ -36,12 +34,12 @@ Map<String, dynamic> _$$_TodoToJson(_$_Todo instance) {
     }
   }
 
-  writeNotNull('deadline', instance.deadline?.toIso8601String());
+  writeNotNull('deadline', instance.deadline);
   val['done'] = instance.done;
   writeNotNull('color', instance.color);
-  val['created_at'] = instance.createdAt.toIso8601String();
-  val['changed_at'] = instance.changedAt.toIso8601String();
-  val['lastUpdatedBy'] = instance.lastUpdatedBy;
+  val['created_at'] = instance.createdAt;
+  val['changed_at'] = instance.changedAt;
+  val['last_updated_by'] = instance.lastUpdatedBy;
   return val;
 }
 

@@ -40,14 +40,14 @@ class EditTaskModel extends ChangeNotifier {
             Todo(
               text: '',
               lastUpdatedBy: DeviceId.deviceId,
-              createdAt: DateTime.now(),
-              changedAt: DateTime.now(),
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              changedAt: DateTime.now().millisecondsSinceEpoch,
               id: const Uuid().v4(),
             ),
         newTask = task == null {
     text = _task.text;
     importance = _task.importance;
-    deadline = _task.deadline;
+    deadline = _task.getDeadline();
     hasDeadline = _task.deadline != null;
   }
 
@@ -62,7 +62,7 @@ class EditTaskModel extends ChangeNotifier {
       var task = _task.copyWith(
         text: text,
         importance: importance,
-        deadline: deadline,
+        deadline: deadline?.millisecondsSinceEpoch,
       );
       onSaved(task);
     }

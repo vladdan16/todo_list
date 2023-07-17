@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
@@ -85,7 +87,10 @@ class _EditTaskBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool newTask = context.read<EditTaskModel>().newTask;
-
+    var colorHex =
+        GetIt.I<FirebaseRemoteConfig>().getString('importance_color');
+    final color =
+        Color(int.parse(colorHex.substring(1, 7), radix: 16) + 0xFF000000);
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       sliver: SliverToBoxAdapter(
@@ -153,8 +158,10 @@ class _EditTaskBody extends StatelessWidget {
                           value: Importance.important,
                           child: Row(
                             children: <Widget>[
-                              const Text('!! ',
-                                  style: TextStyle(color: Colors.red)),
+                              Text(
+                                '!! ',
+                                style: TextStyle(color: color),
+                              ),
                               Text(
                                 Importance.important.name,
                                 style: TextStyle(

@@ -37,8 +37,8 @@ void main() {
       var task = Todo(
         id: 'id',
         text: 'text',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
         lastUpdatedBy: 'device_id',
       );
       when(prefs.getString('todos')).thenReturn(jsonEncode([task.toJson()]));
@@ -61,8 +61,8 @@ void main() {
     var task = Todo(
       id: 'id',
       text: 'text',
-      createdAt: DateTime.now(),
-      changedAt: DateTime.now(),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      changedAt: DateTime.now().millisecondsSinceEpoch,
       lastUpdatedBy: 'device_id',
     );
     when(prefs.getString('todos')).thenReturn(jsonEncode([task.toJson()]));
@@ -85,8 +85,8 @@ void main() {
         id: '1',
         text: 'task1',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
       var revision = 1;
 
@@ -106,8 +106,8 @@ void main() {
         id: '1',
         text: 'task1',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
       var revision = 1;
       var newTodo = Todo(
@@ -115,8 +115,8 @@ void main() {
         text: 'new task description for task1',
         lastUpdatedBy: 'test_device',
         done: true,
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
 
       when(prefs.getString('todos'))
@@ -137,8 +137,8 @@ void main() {
       id: '1',
       text: 'task1',
       lastUpdatedBy: 'test_device',
-      createdAt: DateTime.now(),
-      changedAt: DateTime.now(),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      changedAt: DateTime.now().millisecondsSinceEpoch,
     );
     var revision = 1;
 
@@ -159,8 +159,8 @@ void main() {
         id: '1',
         text: 'task1',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       )
     ];
     var revision = 1;

@@ -24,8 +24,8 @@ void main() {
         id: id,
         text: 'task1',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
       var revision = 1;
 
@@ -45,15 +45,15 @@ void main() {
         id: id,
         text: 'task1',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
       var newTodo = Todo(
         id: '2',
         text: 'task2',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
       var revision = 1;
 

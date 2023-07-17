@@ -13,15 +13,30 @@ class Todo with _$Todo {
     required String id,
     required String text,
     @Default(Importance.basic) Importance importance,
-    @JsonKey(includeIfNull: false) DateTime? deadline,
+    @JsonKey(includeIfNull: false) int? deadline,
     @Default(false) bool done,
     @JsonKey(includeIfNull: false) String? color,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'changed_at') required DateTime changedAt,
-    required String lastUpdatedBy,
+    @JsonKey(name: 'created_at') required int createdAt,
+    @JsonKey(name: 'changed_at') required int changedAt,
+    @JsonKey(name: 'last_updated_by') required String lastUpdatedBy,
   }) = _Todo;
 
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
+}
+
+extension TodoX on Todo {
+  DateTime? getDeadline() {
+    if (deadline == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(deadline!);
+  }
+
+  DateTime getCreatedAt() {
+    return DateTime.fromMillisecondsSinceEpoch(createdAt);
+  }
+
+  DateTime getChangedAt() {
+    return DateTime.fromMillisecondsSinceEpoch(changedAt);
+  }
 }
 
 extension ImportanceX on Importance {

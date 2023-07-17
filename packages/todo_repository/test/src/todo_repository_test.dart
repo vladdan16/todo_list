@@ -23,8 +23,8 @@ void main() {
       id: '1',
       text: 'task1',
       lastUpdatedBy: 'test_device',
-      createdAt: DateTime.now(),
-      changedAt: DateTime.now(),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      changedAt: DateTime.now().millisecondsSinceEpoch,
     )
   ];
   var initialRevision = 1;
@@ -82,8 +82,8 @@ void main() {
         id: '2',
         text: 'task2',
         lastUpdatedBy: 'test_device',
-        createdAt: DateTime.now(),
-        changedAt: DateTime.now(),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
       );
 
       when(remoteApi.saveTodo(newTodo, initialRevision))

@@ -24,14 +24,15 @@ mixin _$Todo {
   String get text => throw _privateConstructorUsedError;
   Importance get importance => throw _privateConstructorUsedError;
   @JsonKey(includeIfNull: false)
-  DateTime? get deadline => throw _privateConstructorUsedError;
+  int? get deadline => throw _privateConstructorUsedError;
   bool get done => throw _privateConstructorUsedError;
   @JsonKey(includeIfNull: false)
   String? get color => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  int get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'changed_at')
-  DateTime get changedAt => throw _privateConstructorUsedError;
+  int get changedAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_updated_by')
   String get lastUpdatedBy => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,12 +49,12 @@ abstract class $TodoCopyWith<$Res> {
       {String id,
       String text,
       Importance importance,
-      @JsonKey(includeIfNull: false) DateTime? deadline,
+      @JsonKey(includeIfNull: false) int? deadline,
       bool done,
       @JsonKey(includeIfNull: false) String? color,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'changed_at') DateTime changedAt,
-      String lastUpdatedBy});
+      @JsonKey(name: 'created_at') int createdAt,
+      @JsonKey(name: 'changed_at') int changedAt,
+      @JsonKey(name: 'last_updated_by') String lastUpdatedBy});
 }
 
 /// @nodoc
@@ -95,7 +96,7 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
       deadline: freezed == deadline
           ? _value.deadline
           : deadline // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as int?,
       done: null == done
           ? _value.done
           : done // ignore: cast_nullable_to_non_nullable
@@ -107,11 +108,11 @@ class _$TodoCopyWithImpl<$Res, $Val extends Todo>
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
       changedAt: null == changedAt
           ? _value.changedAt
           : changedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
       lastUpdatedBy: null == lastUpdatedBy
           ? _value.lastUpdatedBy
           : lastUpdatedBy // ignore: cast_nullable_to_non_nullable
@@ -130,12 +131,12 @@ abstract class _$$_TodoCopyWith<$Res> implements $TodoCopyWith<$Res> {
       {String id,
       String text,
       Importance importance,
-      @JsonKey(includeIfNull: false) DateTime? deadline,
+      @JsonKey(includeIfNull: false) int? deadline,
       bool done,
       @JsonKey(includeIfNull: false) String? color,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'changed_at') DateTime changedAt,
-      String lastUpdatedBy});
+      @JsonKey(name: 'created_at') int createdAt,
+      @JsonKey(name: 'changed_at') int changedAt,
+      @JsonKey(name: 'last_updated_by') String lastUpdatedBy});
 }
 
 /// @nodoc
@@ -173,7 +174,7 @@ class __$$_TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res, _$_Todo>
       deadline: freezed == deadline
           ? _value.deadline
           : deadline // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as int?,
       done: null == done
           ? _value.done
           : done // ignore: cast_nullable_to_non_nullable
@@ -185,11 +186,11 @@ class __$$_TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res, _$_Todo>
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
       changedAt: null == changedAt
           ? _value.changedAt
           : changedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
       lastUpdatedBy: null == lastUpdatedBy
           ? _value.lastUpdatedBy
           : lastUpdatedBy // ignore: cast_nullable_to_non_nullable
@@ -210,7 +211,7 @@ class _$_Todo implements _Todo {
       @JsonKey(includeIfNull: false) this.color,
       @JsonKey(name: 'created_at') required this.createdAt,
       @JsonKey(name: 'changed_at') required this.changedAt,
-      required this.lastUpdatedBy});
+      @JsonKey(name: 'last_updated_by') required this.lastUpdatedBy});
 
   factory _$_Todo.fromJson(Map<String, dynamic> json) => _$$_TodoFromJson(json);
 
@@ -223,7 +224,7 @@ class _$_Todo implements _Todo {
   final Importance importance;
   @override
   @JsonKey(includeIfNull: false)
-  final DateTime? deadline;
+  final int? deadline;
   @override
   @JsonKey()
   final bool done;
@@ -232,11 +233,12 @@ class _$_Todo implements _Todo {
   final String? color;
   @override
   @JsonKey(name: 'created_at')
-  final DateTime createdAt;
+  final int createdAt;
   @override
   @JsonKey(name: 'changed_at')
-  final DateTime changedAt;
+  final int changedAt;
   @override
+  @JsonKey(name: 'last_updated_by')
   final String lastUpdatedBy;
 
   @override
@@ -289,11 +291,12 @@ abstract class _Todo implements Todo {
       {required final String id,
       required final String text,
       final Importance importance,
-      @JsonKey(includeIfNull: false) final DateTime? deadline,
+      @JsonKey(includeIfNull: false) final int? deadline,
       final bool done,
       @JsonKey(includeIfNull: false) final String? color,
-      @JsonKey(name: 'created_at') required final DateTime createdAt,
-      @JsonKey(name: 'changed_at') required final DateTime changedAt,
+      @JsonKey(name: 'created_at') required final int createdAt,
+      @JsonKey(name: 'changed_at') required final int changedAt,
+      @JsonKey(name: 'last_updated_by')
       required final String lastUpdatedBy}) = _$_Todo;
 
   factory _Todo.fromJson(Map<String, dynamic> json) = _$_Todo.fromJson;
@@ -306,7 +309,7 @@ abstract class _Todo implements Todo {
   Importance get importance;
   @override
   @JsonKey(includeIfNull: false)
-  DateTime? get deadline;
+  int? get deadline;
   @override
   bool get done;
   @override
@@ -314,11 +317,12 @@ abstract class _Todo implements Todo {
   String? get color;
   @override
   @JsonKey(name: 'created_at')
-  DateTime get createdAt;
+  int get createdAt;
   @override
   @JsonKey(name: 'changed_at')
-  DateTime get changedAt;
+  int get changedAt;
   @override
+  @JsonKey(name: 'last_updated_by')
   String get lastUpdatedBy;
   @override
   @JsonKey(ignore: true)
