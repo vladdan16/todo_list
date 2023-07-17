@@ -7,11 +7,10 @@ enum Importance { low, basic, important }
 
 @freezed
 class Todo with _$Todo {
-
   const factory Todo({
     required String id,
     required String text,
-    @Default(Importance.basic)Importance importance,
+    @Default(Importance.basic) Importance importance,
     DateTime? deadline,
     @Default(false) bool done,
     String? color,
@@ -19,7 +18,6 @@ class Todo with _$Todo {
     required DateTime changedAt,
     required String lastUpdatedBy,
   }) = _Todo;
-
 
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 }
