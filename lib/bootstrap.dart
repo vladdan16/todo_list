@@ -12,10 +12,6 @@ import 'package:todo_list/src/core/core.dart';
 import 'package:todo_repository/todo_repository.dart';
 
 void bootstrap() async {
-  FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
-  };
-
   await DeviceId.setId();
 
   var prefs = await SharedPreferences.getInstance();
