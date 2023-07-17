@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
@@ -47,7 +46,7 @@ class _EditTaskAppBar extends StatelessWidget {
       pinned: true,
       leading: IconButton(
         onPressed: () {
-          context.pop();
+          NavigationManager.closeEditTaskPage(context);
         },
         icon: const Icon(Icons.close),
       ),
@@ -58,7 +57,7 @@ class _EditTaskAppBar extends StatelessWidget {
                   text: controller.text,
                   onSaved: (task) {
                     context.read<TaskListModel>().saveTask(task);
-                    context.pop();
+                    NavigationManager.closeEditTaskPage(context);
                   },
                   onTextEmpty: () => MyDialogs.showInfoDialog(
                     context: context,
@@ -249,7 +248,7 @@ class _EditTaskBody extends StatelessWidget {
                             context.read<TaskListModel>().removeTask(
                                   context.read<EditTaskModel>().task,
                                 );
-                            context.pop();
+                            NavigationManager.closeEditTaskPage(context);
                           },
                         );
                       },

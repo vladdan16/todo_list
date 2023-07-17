@@ -56,7 +56,8 @@ class TodoRepository {
     }
   }
 
-  Future<void> saveTodo(Todo todo) async {
+  Future<bool> saveTodo(Todo todo) async {
+    bool isNew = false;
     try {
       final todos = [..._curList];
       final todoIndex = todos.indexWhere((e) => e.id == todo.id);
@@ -64,6 +65,7 @@ class TodoRepository {
         todos[todoIndex] = todo;
       } else {
         todos.add(todo);
+        isNew = true;
       }
 
       _curList = todos;
@@ -79,6 +81,7 @@ class TodoRepository {
       log('Repository: Unable to save task, using local data, Server timeout');
       _revision = await _todoApiLocal.saveTodo(todo, _revision);
     }
+    return isNew;
   }
 
   Future<void> deleteTodo(String id) async {

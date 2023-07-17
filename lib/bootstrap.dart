@@ -34,6 +34,9 @@ void bootstrap() async {
   final remoteConfig = await setUpRemoteConfig();
   GetIt.I.registerSingleton<FirebaseRemoteConfig>(remoteConfig);
 
+  final logger = GetIt.I<AnalyticsLogger>();
+  NavigationManager.init(logger);
+
   runApp(const TodoListApp());
 }
 

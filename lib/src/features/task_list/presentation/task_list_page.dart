@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_api/todo_api.dart';
 import 'package:todo_list/src/core/core.dart';
@@ -44,7 +43,7 @@ class TaskListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          context.push('/task/new');
+          NavigationManager.openNewTask(context);
         },
         tooltip: 'Add task',
         child: const Icon(Icons.add),
@@ -83,7 +82,7 @@ class _TaskListBody extends StatelessWidget {
                       if (todos.isNotEmpty) const Divider(),
                       ListTile(
                         onTap: () async {
-                          context.push('/task/new');
+                          NavigationManager.openNewTask(context);
                         },
                         title: Text(
                           'new',
@@ -223,7 +222,7 @@ class _TaskElement extends StatelessWidget {
         trailing: IconButton(
           icon: const Icon(Icons.info_outline),
           onPressed: () async {
-            context.push('/task/${task.id}');
+            NavigationManager.openTaskById(context, task.id);
           },
         ),
       ),
