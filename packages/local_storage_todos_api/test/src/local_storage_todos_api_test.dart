@@ -34,35 +34,45 @@ void main() {
 
     test('getTodoList returns todos when SharedPreferences contains todos',
         () async {
-      when(prefs.getString('todos')).thenReturn(
-          '[{"created_at": 1688302736131,"text": "test","importance": "basic","done": true,"changed_at": 1688302736131,"last_updated_by": "device_id","id": "some_id"}]');
+      var task = Todo(
+        id: 'id',
+        text: 'text',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+        lastUpdatedBy: 'device_id',
+      );
+      when(prefs.getString('todos')).thenReturn(jsonEncode([task.toJson()]));
       when(prefs.getInt('revision')).thenReturn(1);
 
       var (todos, revision) = await api.getTodoList();
 
       expect(todos.length, 1);
-      expect(todos[0].id, "some_id");
-      expect(todos[0].done, true);
-      expect(todos[0].text, "test");
+      expect(todos[0].id, 'id');
+      expect(todos[0].done, false);
+      expect(todos[0].text, 'text');
       expect(todos[0].importance, Importance.basic);
-      expect(todos[0].lastUpdatedBy, "device_id");
+      expect(todos[0].lastUpdatedBy, 'device_id');
 
       expect(revision, 1);
     });
   });
 
   test('getTodo returns todo when SharedPreferences contains todo', () async {
-    var id = "some_id";
-
-    when(prefs.getString('todos')).thenReturn(
-        '[{"created_at": 1688302736131,"text": "test","importance": "basic","done": true,"changed_at": 1688302736131,"last_updated_by": "device_id","id": "$id"}]');
+    var task = Todo(
+      id: 'id',
+      text: 'text',
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      changedAt: DateTime.now().millisecondsSinceEpoch,
+      lastUpdatedBy: 'device_id',
+    );
+    when(prefs.getString('todos')).thenReturn(jsonEncode([task.toJson()]));
     when(prefs.getInt('revision')).thenReturn(1);
 
-    var (todo, revision) = await api.getTodo(id);
+    var (todo, revision) = await api.getTodo('id');
 
-    expect(todo.id, id);
-    expect(todo.done, true);
-    expect(todo.text, "test");
+    expect(todo.id, 'id');
+    expect(todo.done, false);
+    expect(todo.text, 'text');
     expect(todo.importance, Importance.basic);
     expect(todo.lastUpdatedBy, "device_id");
 
@@ -71,7 +81,13 @@ void main() {
 
   group('saveTodo group', () {
     test('saveTodo tries to save new task', () async {
-      var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
       var revision = 1;
 
       when(prefs.getString('todos')).thenReturn('[]');
@@ -86,13 +102,22 @@ void main() {
     });
 
     test('saveTodo tries to save existing task', () async {
-      var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
       var revision = 1;
       var newTodo = Todo(
-          id: '1',
-          text: 'new task description for task1',
-          lastUpdatedBy: 'test_device',
-          done: true);
+        id: '1',
+        text: 'new task description for task1',
+        lastUpdatedBy: 'test_device',
+        done: true,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
 
       when(prefs.getString('todos'))
           .thenReturn('[${jsonEncode(todo.toJson())}]');
@@ -108,7 +133,13 @@ void main() {
   });
 
   test('deleteTodo tries to delete existing task', () async {
-    var todo = Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device');
+    var todo = Todo(
+      id: '1',
+      text: 'task1',
+      lastUpdatedBy: 'test_device',
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      changedAt: DateTime.now().millisecondsSinceEpoch,
+    );
     var revision = 1;
 
     when(prefs.getString('todos')).thenReturn('[${jsonEncode(todo.toJson())}]');
@@ -123,7 +154,15 @@ void main() {
   });
 
   test('pathList test', () async {
-    var list = [Todo(id: '1', text: 'task1', lastUpdatedBy: 'test_device')];
+    var list = [
+      Todo(
+        id: '1',
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      )
+    ];
     var revision = 1;
 
     when(prefs.setString(

@@ -24,11 +24,15 @@ With this application you can easily create tasks, choose priority for each task
 * Cloud syncing of tasks
 * Offline work
 * Error handling
+* Landscape orientation
+* Tablet support
+* Firebase Crashlytics
+* Firebase Analytics
 
 ## Technologies and materials used
 
 * [Dart programming language](https://dart.dev)
-* [Flutter framework](https://flutter.dev)
+* [Flutter framework](https://flutter.dev). I am using latest beta version of flutter for this project, so I do not guarantee that the application will run on a version other than the one specified. To change your flutter version run command `flutter channel beta`.
 * Several flutter libraries. List available at [pubspec.yaml](https://github.com/vladdan16/todo_list/blob/master/pubspec.yaml) file
 
 ## Demonstration
@@ -48,7 +52,8 @@ With this application you can easily create tasks, choose priority for each task
 
 ## Android release
 
-You can try ToLo List right now! Just install `.apk` file by [this link](https://github.com/vladdan16/todo_list/releases/download/v1.2.0/Todo_List_App_v1.2.0.apk).
+You can try ToLo List right now! Just install `.apk` file by [this link](https://1drv.ms/u/s!ArdUz65lrqPehpUJlz_oKrzGT_CFMw?e=emoKIj).
+Or you can join tester program and leave your feedback at Firebase Distribution using the following [invitation link](https://appdistribution.firebase.dev/i/1a14cb707bab009a).
 
 ## Project installation and run
 
@@ -80,7 +85,12 @@ dart run build_runner build --delete-conflicting-outputs
 dart pub get
 ```
 
-6. Run project
+6. Also, ensure that you set up firebase project
+
+7. Run project
 ```console
-flutter run
+# To run app in dev mode
+flutter run --flavor development --target lib/main_development.dart
+# To run app in production app
+flutter run --flavor production --target lib/main_production.dart 
 ```

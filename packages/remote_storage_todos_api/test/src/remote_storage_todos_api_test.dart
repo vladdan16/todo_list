@@ -20,7 +20,13 @@ void main() {
   group('saveTodo test group', () {
     test('saveTodo tries to save new task', () async {
       var id = '1';
-      var todo = Todo(id: id, text: 'task1', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: id,
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
       var revision = 1;
 
       provideDummy(todo);
@@ -35,8 +41,20 @@ void main() {
 
     test('saveTodo tries to save existing task', () async {
       var id = '1';
-      var todo = Todo(id: id, text: 'task1', lastUpdatedBy: 'test_device');
-      var newTodo = Todo(id: '2', text: 'task2', lastUpdatedBy: 'test_device');
+      var todo = Todo(
+        id: id,
+        text: 'task1',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+      var newTodo = Todo(
+        id: '2',
+        text: 'task2',
+        lastUpdatedBy: 'test_device',
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        changedAt: DateTime.now().millisecondsSinceEpoch,
+      );
       var revision = 1;
 
       provideDummy(todo);

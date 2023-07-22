@@ -3,16 +3,19 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:todo_api/todo_api.dart';
+import 'package:todo_list/src/core/core.dart';
 import 'package:todo_list/src/features/task_list/models/models.dart';
 import 'package:todo_repository/todo_repository.dart';
 
 class TaskListModel extends ChangeNotifier {
   final TodoRepository _repository;
+  final AnalyticsLogger _logger;
   TaskFilter filter;
   late List<Todo> _todos;
 
-  TaskListModel(TodoRepository repository)
+  TaskListModel(TodoRepository repository, AnalyticsLogger logger)
       : _repository = repository,
+        _logger = logger,
         filter = TaskFilter.all {
     _todos = repository.getTodos();
   }
@@ -22,7 +25,6 @@ class TaskListModel extends ChangeNotifier {
       );
 
   int get completed {
-    // _todos = _repository.getTodos();
     int res = 0;
     for (var e in _todos) {
       if (e.done) res++;
@@ -30,7 +32,7 @@ class TaskListModel extends ChangeNotifier {
     return res;
   }
 
-  Todo getTodo(String id) {
+  Todo? getTodo(String id) {
     return _repository.getTodo(id);
   }
 
@@ -42,6 +44,7 @@ class TaskListModel extends ChangeNotifier {
 
   void removeTask(Todo task) async {
     _todos.remove(task);
+    _logger.logRemoveTask();
     notifyListeners();
     await _repository.deleteTodo(task.id);
     log('TaskListModel: Task ${task.text} has been removed');
@@ -50,12 +53,14 @@ class TaskListModel extends ChangeNotifier {
   void toggleDone(Todo task) {
     final index = _todos.indexWhere((e) => e.id == task.id);
     _todos[index] = task.copyWith(done: !task.done);
+    _logger.logToggleTask();
     notifyListeners();
     saveTask(_todos[index]);
   }
 
   void saveTask(Todo task) async {
-    await _repository.saveTodo(task);
+    var isNew = await _repository.saveTodo(task);
+    if (isNew) _logger.logAddTask();
     _todos = _repository.getTodos();
     log('TaskListModel: Task ${task.text} has been saved');
     notifyListeners();

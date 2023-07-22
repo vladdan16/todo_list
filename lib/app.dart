@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_list/src/core/router.dart';
+import 'package:todo_list/src/core/core.dart';
 import 'package:todo_list/src/models/task_list.dart';
 import 'package:todo_repository/todo_repository.dart';
 
@@ -53,7 +53,10 @@ class AppView extends StatelessWidget {
           );
         }
         return ChangeNotifierProvider(
-          create: (context) => TaskListModel(GetIt.I<TodoRepository>()),
+          create: (context) => TaskListModel(
+            GetIt.I<TodoRepository>(),
+            GetIt.I<AnalyticsLogger>(),
+          ),
           child: MaterialApp.router(
             routerConfig: AppRouter.router,
             localizationsDelegates: context.localizationDelegates,
